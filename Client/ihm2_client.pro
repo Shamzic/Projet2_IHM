@@ -25,12 +25,14 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    playbutton.cpp \
-    client.cpp
+    playbutton.cpp \ #\
+    audioprogressbar.cpp
+    #client.cpp
 
 HEADERS  += mainwindow.h \
-    playbutton.h \
-    client.h
+    playbutton.h \ #\
+    audioprogressbar.h
+    #client.h
 
 FORMS    += mainwindow.ui
 

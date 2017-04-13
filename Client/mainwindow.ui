@@ -6,26 +6,86 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1225</width>
-    <height>617</height>
+    <width>724</width>
+    <height>336</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QWidget" name="playbutton" native="true">
+   <widget class="QWidget" name="horizontalLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>110</x>
-      <y>70</y>
-      <width>71</width>
-      <height>61</height>
+      <x>80</x>
+      <y>50</y>
+      <width>560</width>
+      <height>51</height>
      </rect>
     </property>
-    <property name="styleSheet">
-     <string notr="true"/>
-    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="Playbutton" name="playbutton" native="true">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>41</width>
+         <height>41</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>41</width>
+         <height>41</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true"/>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>0:00</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="AudioProgressBar" name="widget" native="true">
+       <property name="minimumSize">
+        <size>
+         <width>401</width>
+         <height>11</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>401</width>
+         <height>11</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>0:00</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
@@ -33,8 +93,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1225</width>
-     <height>21</height>
+     <width>724</width>
+     <height>22</height>
     </rect>
    </property>
   </widget>
@@ -49,6 +109,20 @@
   <widget class="QStatusBar" name="statusBar"/>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>Playbutton</class>
+   <extends>QWidget</extends>
+   <header>playbutton.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>AudioProgressBar</class>
+   <extends>QWidget</extends>
+   <header>audioprogressbar.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

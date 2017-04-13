@@ -6,8 +6,17 @@
  ***************************************************************************/
 #include "playbutton.h"
 
-playbutton::playbutton(QWidget *parent) :
-    QWidget(parent)
+Playbutton::Playbutton(QWidget *parent) :
+    QWidget(parent),
+    picturePlayButton(":/images/play.png")
 {
+
+}
+
+/* ne pas oublier d'appeler update() quand on change qqch à l'image */
+
+void Playbutton::paintEvent(QPaintEvent *) {
+    QPainter painter(this);
+    painter.drawPixmap(0,0,picturePlayButton);
 
 }

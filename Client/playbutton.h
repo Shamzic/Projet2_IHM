@@ -8,12 +8,22 @@
 #define PLAYBUTTON_H
 
 #include <QWidget>
+#include <QPainter>
 
-class playbutton: public QWidget
+class Playbutton: public QWidget
 {
     Q_OBJECT
 public:
-    playbutton(QWidget *parent = 0);
+    Playbutton(QWidget *parent = 0);
+
+signals:
+
+public slots:
+
+protected:
+    QPixmap picturePlayButton;
+    QPixmap picturePauseButton;
+    void paintEvent(QPaintEvent *e);
 };
 
 #endif // PLAYBUTTON_H
