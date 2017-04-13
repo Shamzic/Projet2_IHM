@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -25,12 +25,16 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    playbutton.cpp
+    playbutton.cpp \
+    client.cpp
 
 HEADERS  += mainwindow.h \
-    playbutton.h
+    playbutton.h \
+    client.h
 
 FORMS    += mainwindow.ui
 
 RESOURCES += \
     images.qrc
+
+CONFIG += c++11
