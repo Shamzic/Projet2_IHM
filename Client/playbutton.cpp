@@ -6,17 +6,36 @@
  ***************************************************************************/
 #include "playbutton.h"
 
+#include <QDebug>
+
 Playbutton::Playbutton(QWidget *parent) :
     QWidget(parent),
-    picturePlayButton(":/images/play.png")
+    isPlaying(false),
+    picturePlayButton(":/images/playButton.png"),
+    picturePauseButton(":/images/pauseButton.png")
 {
-
 }
 
-/* ne pas oublier d'appeler update() quand on change qqch à l'image */
+void Playbutton::setState(bool playing) { isPlaying = playing; }
+
+void Playbutton::playOrPause(bool playing) {
+    setState(playing);
+    update();
+}
 
 void Playbutton::paintEvent(QPaintEvent *) {
     QPainter painter(this);
-    painter.drawPixmap(0,0,picturePlayButton);
-
+    if (isPlaying)
+        painter.drawPixmap(0,0,picturePauseButton);
+    else
+        painter.drawPixmap(0,0,picturePlayButton);
 }
+
+void Playbutton::mousePressEvent(QMouseEvent *event) {
+    if (isPlaying)
+        setState(false);
+    else
+        setState(true);
+    update();
+}
+

@@ -50,7 +50,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QLabel" name="label">
+      <widget class="QLabel" name="tempsPasse">
        <property name="text">
         <string>0:00</string>
        </property>
@@ -60,7 +60,7 @@
       </widget>
      </item>
      <item>
-      <widget class="AudioProgressBar" name="widget" native="true">
+      <widget class="AudioProgressBar" name="audioProgress" native="true">
        <property name="minimumSize">
         <size>
          <width>401</width>
@@ -76,7 +76,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QLabel" name="label_2">
+      <widget class="QLabel" name="tempsRestant">
        <property name="text">
         <string>0:00</string>
        </property>

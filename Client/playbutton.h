@@ -16,14 +16,19 @@ class Playbutton: public QWidget
 public:
     Playbutton(QWidget *parent = 0);
 
-signals:
-
 public slots:
+    void playOrPause(bool playing);
+
+signals:
+    void changedState(bool playing);
 
 protected:
+    bool isPlaying;
     QPixmap picturePlayButton;
     QPixmap picturePauseButton;
+    void setState(bool playing);
     void paintEvent(QPaintEvent *e);
+    void mousePressEvent(QMouseEvent *event);
 };
 
 #endif // PLAYBUTTON_H

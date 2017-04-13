@@ -3,5 +3,9 @@
         <file>images/play.png</file>
         <file>images/bar_meter.png</file>
         <file>images/bar_meter_empty.png</file>
+        <file>images/pauseButton.png</file>
+        <file>images/playButton.png</file>
+        <file>images/fastBackward.png</file>
+        <file>images/fastForward.png</file>
     </qresource>
 </RCC>

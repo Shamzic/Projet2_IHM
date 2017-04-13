@@ -10,6 +10,10 @@
 
 #include <QWidget>
 #include <QPainter>
+#include <QTimer>
+#include <QMouseEvent>
+#include <QtMath>
+
 
 class AudioProgressBar : public QWidget
 {
@@ -20,11 +24,16 @@ public:
 signals:
 
 public slots:
+    void changeAudio(int length);
 
 protected:
+    int timePassed; // in ms ?
+    int audioLength;
     QPixmap pictureFilledProgressBar;
     QPixmap pictureEmptyProgressBar;
     void paintEvent(QPaintEvent *e);
+    void mousePressEvent(QMouseEvent *event);
+    void mouseMoveEvent(QMouseEvent *event);
 
 };
 
