@@ -7,5 +7,9 @@
         <file>images/playButton.png</file>
         <file>images/fastBackward.png</file>
         <file>images/fastForward.png</file>
+        <file>images/audio_off.png</file>
+        <file>images/audio_on.png</file>
+        <file>images/volumecontrol.png</file>
+        <file>images/volumeslider.png</file>
     </qresource>
 </RCC>
