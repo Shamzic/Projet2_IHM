@@ -7,6 +7,18 @@
 
 #include "audioprogressbar.h"
 
+
+/**
+ * Constructeur AudioProgressBar.
+ *
+ * <p>
+ * Initilise le temps à 0.
+ * Taille de la barre à 2000.
+ * Inclu deux images de barre : vide/remplie.
+ * </p>
+ * @param parent
+ *            Widget parent.
+ */
 AudioProgressBar::AudioProgressBar(QWidget *parent) :
     QWidget(parent),
     timePassed(0),
@@ -17,11 +29,30 @@ AudioProgressBar::AudioProgressBar(QWidget *parent) :
 
 }
 
+/**
+ * Change le temps de la barre.
+ * Temps mis à 0?
+ *
+ * @param length
+ *            Nouvelle taille de la barre.
+ */
 void AudioProgressBar::changeAudio(int length) {
     timePassed = 0;
     audioLength = length;
 }
 
+/**
+ * Evenement paint.
+ *
+ * <p>
+ * Repeint la barre dès qu'un évênement QPaint est effectué.
+ * Affiche barre vide si taille 0
+ * Sinon,
+ * </p>
+ *
+ * @param type QPaintEvent *
+ *            Evenement de paint
+ */
 void AudioProgressBar::paintEvent(QPaintEvent *){
     QPainter painter(this);
     painter.drawPixmap(0,0,pictureEmptyProgressBar);
@@ -31,13 +62,31 @@ void AudioProgressBar::paintEvent(QPaintEvent *){
     }
 }
 
+/**
+ * Lance la fonction mousePressEvent
+ * Si un evenement mouseEvent surgit.
+ *
+ * @param type QMouseEvent *event
+ *            Evenement de souris.
+ */
 void AudioProgressBar::mouseMoveEvent(QMouseEvent *event) {
     mousePressEvent(event);
 }
 
+/**
+ * Update la barre lorsqu'on presse la souris
+ *
+ * <p>
+ * Décale la barre à la position du temps de lecture
+ * indiqué par la position de la souris lorsqu'elle est pressée.
+ * </p>
+ *
+ * @param type QMouseEvent *event
+ *            Evenement de souris.
+ */
 void AudioProgressBar::mousePressEvent(QMouseEvent *event) {
     float pourc = (float)(event->x())/(float)pictureEmptyProgressBar.width();
-    timePassed = floor(pourc*audioLength);
+    timePassed = floor(pourc*audioLength); // What is this ???
     if (timePassed < 0 )
         timePassed = 0;
     else if (timePassed > audioLength)
