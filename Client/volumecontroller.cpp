@@ -40,8 +40,6 @@ void VolumeController::mousePressEvent(QMouseEvent *event) {
     else if (volume > 100)
         volume = 100;
     update();
-
-    qDebug() << volume ;
 }
 
 void VolumeController::mouseMoveEvent(QMouseEvent *event) {
