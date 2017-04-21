@@ -7,7 +7,9 @@
 
 #include "automate.h"
 
-static const char kVitesseLecture[]="vitesse";
+const char kVitesseLecture[]="vitesse";
+const char kParamSwitch[]="switch";
+
 /* Bon j'ai fais un peu yolo copié sur la machine...
  *
  * Mais en gros j'aimerais que on appuie sur play, ça lance la machine à état
@@ -18,7 +20,9 @@ static const char kVitesseLecture[]="vitesse";
  *
  * */
 
-automate::automate(QObject *parent) : QObject(parent)
+ #include <QDebug>
+
+Automate::Automate(QObject *parent) : QObject(parent)
 {
     // Timer durée des
     TpsLecture = new QTimer(this);
@@ -30,66 +34,73 @@ automate::automate(QObject *parent) : QObject(parent)
 
     // Etats
     statePlay = new QState(Lecteur);
-    statePlayNext = new QState(Lecteur);
     statePause = new QState(Lecteur);
-    stateAvanceRapide = new QState(Lecteur);
-    stateRetourRapide = new QState(Lecteur);
-    stateFin = new QState(Lecteur);
+    stateFin = new QFinalState(Lecteur);
 
-    // Historiques ???
-    PlayHistory = new QHistoryState(statePlay);
-    // AvanceRapideHistory = new QHistoryState(stateAvanceRapide);
+    // play vers fin, si fin du morceau
+    statePlay->addTransition(TpsLecture,SIGNAL(timeout()),stateFin);
+    // play vers pause, si signal pause
+    statePlay->addTransition(this,SIGNAL(signalPause()),statePause);
+    // pause vers play, si signal play
+    statePause->addTransition(this,SIGNAL(signalPlay()),statePlay);
 
-     // transitions
-    // Fin de la lecture, play le morceau suivant
-    lecture_morceau=statePlay->addTransition(TpsLecture,SIGNAL(timeout()),statePlayNext);
-
-    QObject::connect(statePlayNext, SIGNAL(entered()),this,SLOT(start()));
-
-    statePause->addTransition(this, SIGNAL(signalPause()),PlayHistory);
-    // Si play => lis morceau selectionné dans la liste
-    // Si pause => sauvegarde position et stop lecture
-    // Si fin de pause => reprise de la lecture et de la liste
-    // si fin lecture => lecture morceau suivant
-    // Si fin liste => Stop
-
-    // Si onglet historique
-        // Affiche les derniers morceaux
-        // si play, lis morceau selectionné et liste associée
-    // Si onglet radio
-        // Affiche les radios disponibles
-        // si play radio => lis radio selectionnée
-
-}
-
-void automate::setupMessages(){
-    QObject::connect(statePlay, &QState::entered, [this](){
-        emit signalLecteur(kSignalPhase, true);
-      });
-}
-
-void automate::start(bool on){
-  if (!on) { // On arrête la machine
-      TpsLecture->stop();
-      Lecteur->stop();
+    QObject::connect(stateFin, &QState::entered, [this](){
+      qDebug()<<"Fini";
+      //QVariantMap params;
+      //params[kParamPhase]=QVariant(kPhaseEndCycle);
+      //emit signalMachine(kSignalPhase, params);
       cleanup();
-      return;
+    });
+
+    setupMessages();
+
+
+    Lecteur->setInitialState(statePlay);
+    Lecteur->start();
+
+    qDebug() << "debut machine" ;
+    TpsLecture->setInterval(2000);
+    TpsLecture->start();
+}
+
+void Automate::message(signalType sig, QVariantMap params) {
+    switch(sig){
+        case kSignalPlay:
+          setPlay(params[kParamSwitch].toBool());
+          break;
+        case kSignalPause:
+          setPause(params[kParamSwitch].toBool());
+          break;
+        case kSignalEnd:
+            cleanup();
+          break;
+        default:
+          break;
     }
 }
 
-void Automate::cleanup(){
-  // On remet tout à zéro
+/* Messages vers l'UI */
+void Automate::setupMessages() {
+    //messages??
+}
+
+void Automate::cleanup() {
+    qDebug() << "cleanup" ;
+    TpsLecture->stop();
+    Lecteur->stop();
 }
 
 
-void automate::setPlay(bool){
-  emit signalPlay();
+void Automate::setPlay(bool on){
+    if (!on) { // On arrête la machine
+        cleanup();
+        return;
+    }
+
+    Lecteur->setInitialState(statePlay);
+    Lecteur->start();
 }
 
-void automate::setPause(bool){
-  emit signalPause();
-}
-
-void automate::setAcceleration(int factor) {
-  accelerationFactor=factor;
+void Automate::setPause(bool){
+    emit signalPause();
 }

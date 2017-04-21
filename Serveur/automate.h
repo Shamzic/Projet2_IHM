@@ -9,72 +9,66 @@
 #define AUTOMATE_H
 
 #include <QObject>
-#include <QStateMachine>;
-#include <QState>;
+#include <QStateMachine>
+#include <QState>
 #include <QHistoryState>
 #include <QFinalState>
 #include <QSignalTransition>
 #include <QTimer>
 #include <QDebug>
 
+extern const char kVitesseLecture[];
+extern const char kParamSwitch[];
+
 enum signalType {
-  kSignalPlay,
-  kSignalPause,
-  kSignalEnd
+    kSignalPlay,
+    kSignalPause,
+    kSignalEnd
 };
 
 // Phase de lecture de liste
 enum phaseliste{
     kPhaseLecture,
+    kPhasePause,
     kPhaseEnd
 };
 
 // Vitesses de lecture
 enum speed {
-  kVitesseStop=0,
-  kVitesse1=1,
-  kVitesse2=2,
-  kVitesseBack1=-1,
-  kVitesseBack2=-1
+  kVitesseNormale=0,
+  kVitesseDouble=1
 };
 
 
 
-class automate : public QObject
+class Automate : public QObject
 {
     Q_OBJECT
 public:
-    explicit automate(QObject *parent = 0);
+    explicit Automate(QObject *parent = 0);
 
 private:
     QTimer *TpsLecture;
-
     QStateMachine *Lecteur;
-
     QState *statePlay;
-    QState *statePlayNext;
     QState *statePause;
-    QState *stateAvanceRapide;
-    QState *stateRetourRapide;
-
-     QHistoryState *PlayHistory;
-    // QHistoryState *AvanceRapideHistory;
-
-    QSignalTransition *lecture_morceau;
-
     QFinalState *stateFin;
+    void setupMessages();
+    void cleanup();
 
 signals:
-
-    void signalLecteur(signalType,bool on=true, int param1=0);
-
+    // Messages vers l'UI
+    void signalLecteur(signalType, QVariantMap);
     void signalPlay();
     void signalPause();
 
-public slots:
+private slots:
     void setPlay(bool);
     void setPause(bool);
-    void setAcceleration(int factor);
+
+public slots:
+    // Messages venant de l'UI
+    void message(signalType, QVariantMap);
 };
 
 #endif // AUTOMATE_H

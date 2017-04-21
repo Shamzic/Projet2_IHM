@@ -4,7 +4,8 @@
 #
 #-------------------------------------------------
 
-QT       += core gui network
+QT       += core network
+QT	-= gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -24,14 +25,11 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp \
-    serveur.cpp \
+	serveur.cpp \
     automate.cpp
 
-HEADERS  += mainwindow.h \
-    serveur.h \
+HEADERS  += \
+	serveur.h \
     automate.h
-
-FORMS    += mainwindow.ui
 
 CONFIG += c++11
