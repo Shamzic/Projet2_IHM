@@ -12,10 +12,13 @@
 #include <QLocalServer>
 #include <QLocalSocket>
 #include <QtConcurrent/QtConcurrent>
+#include <QVector>
 #include "automate.h"
 
-#define SERVER_NAME "\\\\.\\pipe\\mpv-pipe" //"\\\\.\\pipe\\mpv-pipe"
-                                      //"/tmp/mpv-socket"
+#define MPV_SERVER_NAME "/tmp/mpv-socket" //"\\\\.\\pipe\\mpv-pipe"
+                                          //"/tmp/mpv-socket"
+#define AUTOMATE_SERVER_NAME "/tmp/client-socket"
+
 extern const char kJsonSignal[];
 extern const char kJsonParams[];
 
@@ -34,7 +37,10 @@ private:
     QLocalSocket *mpv=NULL;
     void clientMessageLoop();
     void sendRequestToMPV();
-    void sendRequestToMPV2();
+
+private slots:
+    void connectionFromClient();
+    void clientDisconnected();
 
 public slots:
     // Messages reçus de l'automate

@@ -61,15 +61,16 @@ void Playbutton::paintEvent(QPaintEvent *) {
 
 /**
  * Change l'état du bouton lors d'un évènement souris (play/pause)
- *
+ * Notifie l'UI et le client.
  * @param event
  *            Evenement QMouse.
  */
-void Playbutton::mousePressEvent(QMouseEvent *event) {
+void Playbutton::mousePressEvent(QMouseEvent *) {
     if (isPlaying)
         setState(false);
     else
         setState(true);
     update();
+    emit changedState(isPlaying);
 }
 

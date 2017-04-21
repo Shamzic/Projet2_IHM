@@ -5,13 +5,29 @@
  *                                                                         *
  ***************************************************************************/
 #include "mainwindow.h"
+#include "client.h"
+#include <iostream>
 #include <QApplication>
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
-    MainWindow w;
-    w.show();
+    int r;
+    try {
+        Client c;
+        QApplication a(argc, argv);
+        MainWindow w;
+        w.show();
 
-    return a.exec();
+        QObject::connect(&w, SIGNAL(signalUI(signalType, QVariantMap)),
+                            &c, SLOT(messageFromUI(signalType, QVariantMap)));
+
+        QObject::connect(&c, SIGNAL(signalFromClient(signalType, QVariantMap)),
+                                    &w, SLOT(message(signalType, QVariantMap)));
+        r = a.exec();
+    } catch (QString err) {
+        std::cout << err.toStdString() << "\n";
+        std::cout << "terminating" << "\n";
+        r = 1;
+    }
+    return r;
 }
