@@ -16,11 +16,13 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
     try {
         Serveur s;
-        //Automate m;
+        Automate m;
 
         // On connect le serveur à l'Automate
-        //  QObject::connect(&m, SIGNAL(signalMachine(signalType, QVariantMap)), &s, SLOT(message(signalType, QVariantMap)));
-        //  QObject::connect(&s, SIGNAL(signalUI(signalType, QVariantMap)), &m, SLOT(message(signalType, QVariantMap)));
+        QObject::connect(&m, SIGNAL(signalLecteur(signalType, QVariantMap)),
+                            &s, SLOT(message(signalType, QVariantMap)));
+        QObject::connect(&s, SIGNAL(signalFromServer(signalType, QVariantMap)),
+                            &m, SLOT(message(signalType, QVariantMap)));
 
         r = a.exec();
     } catch (QString err) {

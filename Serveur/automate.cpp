@@ -7,8 +7,6 @@
 
 #include "automate.h"
 
-const char kVitesseLecture[]="vitesse";
-const char kParamSwitch[]="switch";
 
 /* Bon j'ai fais un peu yolo copié sur la machine...
  *
@@ -53,35 +51,41 @@ Automate::Automate(QObject *parent) : QObject(parent)
     });
 
     setupMessages();
-
-
-    Lecteur->setInitialState(statePlay);
-    Lecteur->start();
-
-    qDebug() << "debut machine" ;
-    TpsLecture->setInterval(2000);
-    TpsLecture->start();
 }
 
 void Automate::message(signalType sig, QVariantMap params) {
     switch(sig){
         case kSignalPlay:
-          setPlay(params[kParamSwitch].toBool());
-          break;
+            setPlay(true);
+            break;
         case kSignalPause:
-          setPause(params[kParamSwitch].toBool());
-          break;
+            setPause(true);
+            break;
         case kSignalEnd:
             cleanup();
-          break;
+            break;
         default:
-          break;
+            break;
     }
 }
 
-/* Messages vers l'UI */
+/* Messages vers le serveur */
 void Automate::setupMessages() {
-    //messages??
+    QObject::connect(statePlay, &QState::entered, [this](){
+      qDebug()<<"entree state play";
+    });
+
+    QObject::connect(statePlay, &QState::exited, [this](){
+      qDebug()<<"sortie state play";
+    });
+
+    QObject::connect(statePause, &QState::entered, [this](){
+      qDebug()<<"entree state pause";
+    });
+
+    QObject::connect(statePause, &QState::exited, [this](){
+      qDebug()<<"sortie state pause";
+    });
 }
 
 void Automate::cleanup() {
@@ -91,14 +95,10 @@ void Automate::cleanup() {
 }
 
 
-void Automate::setPlay(bool on){
-    if (!on) { // On arrête la machine
-        cleanup();
-        return;
-    }
-
+void Automate::setPlay(bool){
     Lecteur->setInitialState(statePlay);
     Lecteur->start();
+    qDebug() << "debut machine" ;
 }
 
 void Automate::setPause(bool){

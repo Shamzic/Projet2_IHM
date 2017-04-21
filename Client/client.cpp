@@ -7,17 +7,13 @@
 
 #include "client.h"
 
-
-const char kJsonSignal[]="signal";
-const char kJsonParams[]="params";
-
 Client::Client(QObject *parent) :
     QObject(parent),
     m_socket(new QLocalSocket(this))
 {
     qRegisterMetaType<signalType>("signalType");
 
-    m_socket->connectToServer(SERVER_NAME);
+    m_socket->connectToServer(AUTOMATE_SERVER_NAME);
     if (m_socket->waitForConnected()) {
          qDebug() << "connected to server";
     } else {

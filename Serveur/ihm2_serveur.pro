@@ -30,6 +30,7 @@ SOURCES += main.cpp\
 
 HEADERS  += \
 	serveur.h \
-    automate.h
+    automate.h \
+    ../constantes.h
 
 CONFIG += c++11

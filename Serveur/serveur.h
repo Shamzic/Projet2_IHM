@@ -15,12 +15,6 @@
 #include <QVector>
 #include "automate.h"
 
-#define MPV_SERVER_NAME "/tmp/mpv-socket"
-#define AUTOMATE_SERVER_NAME "/tmp/client-socket"
-
-extern const char kJsonSignal[];
-extern const char kJsonParams[];
-
 class Serveur: public QObject
 {
     Q_OBJECT

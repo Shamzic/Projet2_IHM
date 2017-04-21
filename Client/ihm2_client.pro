@@ -34,7 +34,8 @@ HEADERS  += mainwindow.h \
     playbutton.h \
     audioprogressbar.h \
     volumecontroller.h \
-    client.h
+    client.h \
+    ../constantes.h
 
 FORMS    += mainwindow.ui
 

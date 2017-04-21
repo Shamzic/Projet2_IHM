@@ -9,9 +9,6 @@
 
 #include <QDebug>
 
-const char kJsonSignal[]="signal";
-const char kJsonParams[]="params";
-
 Serveur::Serveur(QObject *parent) :
     QObject(parent),
     m_server(new QLocalServer(this)),
@@ -96,9 +93,8 @@ void Serveur::sendRequestToMPV(){
     QJsonObject jsonObject ;
 
 QJsonArray a ;
-a.append("set_property");
-a.append("volume");
-a.append(70);
+a.append("loadfile");
+a.append(audio[0]);
 
     jsonObject["command"]=a;
     QByteArray bytes = QJsonDocument(jsonObject).toJson(QJsonDocument::Compact)+"\n";

@@ -8,26 +8,13 @@
 #ifndef CLIENT_H
 #define CLIENT_H
 
+#include "../constantes.h"
 #include <QObject>
 #include <QLocalSocket>
 #include <QtConcurrent/QtConcurrent>
 #include <QVariantMap>
 
 #include <QDebug>
-
-#define SERVER_NAME "/tmp/client-socket"
-
-extern const char kJsonSignal[];
-extern const char kJsonParams[];
-
-extern const char kVitesseLecture[];
-extern const char kParamSwitch[];
-
-enum signalType {
-    kSignalPlay,
-    kSignalPause,
-    kSignalEnd
-};
 
 class Client : public QObject
 {

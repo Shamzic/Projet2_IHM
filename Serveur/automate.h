@@ -8,6 +8,7 @@
 #ifndef AUTOMATE_H
 #define AUTOMATE_H
 
+#include "../constantes.h"
 #include <QObject>
 #include <QStateMachine>
 #include <QState>
@@ -16,30 +17,6 @@
 #include <QSignalTransition>
 #include <QTimer>
 #include <QDebug>
-
-extern const char kVitesseLecture[];
-extern const char kParamSwitch[];
-
-enum signalType {
-    kSignalPlay,
-    kSignalPause,
-    kSignalEnd
-};
-
-// Phase de lecture de liste
-enum phaseliste{
-    kPhaseLecture,
-    kPhasePause,
-    kPhaseEnd
-};
-
-// Vitesses de lecture
-enum speed {
-  kVitesseNormale=0,
-  kVitesseDouble=1
-};
-
-
 
 class Automate : public QObject
 {
@@ -57,7 +34,7 @@ private:
     void cleanup();
 
 signals:
-    // Messages vers l'UI
+    // Messages de l'automate vers le serveur
     void signalLecteur(signalType, QVariantMap);
     void signalPlay();
     void signalPause();
@@ -67,7 +44,7 @@ private slots:
     void setPause(bool);
 
 public slots:
-    // Messages venant de l'UI
+    // Messages du serveur vers l'automate
     void message(signalType, QVariantMap);
 };
 
