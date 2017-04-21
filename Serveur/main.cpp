@@ -12,20 +12,22 @@
 
 int main(int argc, char *argv[])
 {
+    int r;
     try {
         Serveur s;
+        QApplication a(argc, argv);
+        //Automate m;
+
+        // On connect le serveur à l'Automate
+        //  QObject::connect(&m, SIGNAL(signalMachine(signalType, QVariantMap)), &s, SLOT(message(signalType, QVariantMap)));
+        //  QObject::connect(&s, SIGNAL(signalUI(signalType, QVariantMap)), &m, SLOT(message(signalType, QVariantMap)));
+
+        r = a.exec();
     } catch (QString err) {
         std::cout << err.toStdString() << "\n";
         std::cout << "terminating" << "\n";
-        return 1;
+        r = 1;
     }
 
-    QApplication a(argc, argv);
-    //Automate m;
-
-    // On connect le serveur à l'Automate
-    //  QObject::connect(&m, SIGNAL(signalMachine(signalType, QVariantMap)), &s, SLOT(message(signalType, QVariantMap)));
-    //  QObject::connect(&s, SIGNAL(signalUI(signalType, QVariantMap)), &m, SLOT(message(signalType, QVariantMap)));
-
-    return a.exec();
+    return r;
 }

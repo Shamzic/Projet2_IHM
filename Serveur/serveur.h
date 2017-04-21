@@ -29,12 +29,12 @@ public:
     ~Serveur();
     bool m_running;
     QFuture<void> m_serverLoopThread;
+    void clientMessageLoop();
 
 private:
     QLocalServer *m_server;
     QLocalSocket * m_client;
     QLocalSocket *mpv=NULL;
-    void clientMessageLoop();
     void sendRequestToMPV();
 
 private slots:

@@ -18,7 +18,7 @@ Client::Client(QObject *parent) :
     qRegisterMetaType<signalType>("signalType");
 
     m_socket->connectToServer(SERVER_NAME);
-    if (m_socket->waitForConnected()) {
+    if (m_socket->waitForConnected(6000)) {
          qDebug() << "connected to server";
     } else {
         throw m_socket->errorString();

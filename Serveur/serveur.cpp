@@ -35,13 +35,14 @@ Serveur::Serveur(QObject *parent) :
     if (!m_server->listen(serverName)) {
         throw m_server->errorString();
     }
-
+qDebug() << m_server->fullServerName();
     connect(m_server, SIGNAL(newConnection()), this, SLOT(connectionFromClient()));
 
     sendRequestToMPV();
 }
 
 Serveur::~Serveur() {
+qDebug() << "del server" ;
     mpv->disconnectFromServer();
     if(m_client)m_client->abort();
     m_server->close();
