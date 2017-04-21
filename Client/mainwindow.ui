@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>719</width>
-    <height>408</height>
+    <width>858</width>
+    <height>461</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,8 +19,8 @@
      <rect>
       <x>20</x>
       <y>10</y>
-      <width>680</width>
-      <height>349</height>
+      <width>818</width>
+      <height>381</height>
      </rect>
     </property>
     <layout class="QGridLayout" name="gridLayout">
@@ -187,183 +187,140 @@
       </layout>
      </item>
      <item row="1" column="0">
-      <widget class="QTabWidget" name="tabwidget">
+      <widget class="QTabWidget" name="tabs">
        <property name="currentIndex">
-        <number>2</number>
+        <number>1</number>
        </property>
        <widget class="QWidget" name="Listes">
         <attribute name="title">
          <string>Listes</string>
         </attribute>
-        <widget class="QLabel" name="CurrentList">
+        <widget class="QWidget" name="gridLayoutWidget_2">
          <property name="geometry">
           <rect>
-           <x>0</x>
-           <y>10</y>
-           <width>231</width>
-           <height>21</height>
+           <x>10</x>
+           <y>0</y>
+           <width>791</width>
+           <height>241</height>
           </rect>
          </property>
-         <property name="styleSheet">
-          <string notr="true">#CurrentList 
+         <layout class="QGridLayout" name="gridLayout_2">
+          <item row="1" column="0">
+           <widget class="QTableWidget" name="CurrentMusicsTable"/>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="CurrentListLabel">
+            <property name="styleSheet">
+             <string notr="true">#CurrentList 
 {
 	border: 1px solid;
 	border-color : rgb(204, 204, 204);
 }</string>
-         </property>
-         <property name="text">
-          <string>  Liste en cours : </string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-        <widget class="QScrollArea" name="CurrentMusics">
-         <property name="geometry">
-          <rect>
-           <x>10</x>
-           <y>40</y>
-           <width>401</width>
-           <height>161</height>
-          </rect>
-         </property>
-         <property name="widgetResizable">
-          <bool>true</bool>
-         </property>
-         <widget class="QWidget" name="scrollAreaWidgetContents">
-          <property name="geometry">
-           <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>399</width>
-            <height>159</height>
-           </rect>
-          </property>
-         </widget>
-        </widget>
-        <widget class="QScrollArea" name="ScrollOtherLists">
-         <property name="geometry">
-          <rect>
-           <x>430</x>
-           <y>40</y>
-           <width>241</width>
-           <height>161</height>
-          </rect>
-         </property>
-         <property name="widgetResizable">
-          <bool>true</bool>
-         </property>
-         <widget class="QWidget" name="OhterLists">
-          <property name="geometry">
-           <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>239</width>
-            <height>159</height>
-           </rect>
-          </property>
-         </widget>
-        </widget>
-        <widget class="QLabel" name="OtherListsTitle">
-         <property name="geometry">
-          <rect>
-           <x>430</x>
-           <y>20</y>
-           <width>241</width>
-           <height>21</height>
-          </rect>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">#OtherListsTitle
+            </property>
+            <property name="text">
+             <string>  Liste en cours : </string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QTableWidget" name="otherListsTable">
+            <property name="maximumSize">
+             <size>
+              <width>300</width>
+              <height>16777215</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLabel" name="OtherListsLabel">
+            <property name="styleSheet">
+             <string notr="true">#OtherListsTitle
 {
 
    border : 1px solid;
 
 	border-color : rgb(204, 204, 204);
 }</string>
-         </property>
-         <property name="text">
-          <string> Autres Listes</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
+            </property>
+            <property name="text">
+             <string> Autres Listes</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </widget>
        </widget>
        <widget class="QWidget" name="Radios">
         <attribute name="title">
          <string>Radios</string>
         </attribute>
-        <widget class="QLabel" name="CurrentRadio">
+        <widget class="QWidget" name="gridLayoutWidget_3">
          <property name="geometry">
           <rect>
-           <x>0</x>
-           <y>10</y>
-           <width>231</width>
-           <height>21</height>
+           <x>10</x>
+           <y>0</y>
+           <width>791</width>
+           <height>241</height>
           </rect>
          </property>
-         <property name="styleSheet">
-          <string notr="true">#CurrentRadio
+         <layout class="QGridLayout" name="gridLayout_3">
+          <item row="1" column="0">
+           <widget class="QTableWidget" name="CurrentMusicsTable_2"/>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="CurrentListLabel_2">
+            <property name="styleSheet">
+             <string notr="true">#CurrentList 
 {
 	border: 1px solid;
 	border-color : rgb(204, 204, 204);
 }</string>
-         </property>
-         <property name="text">
-          <string>  Radio en cours : </string>
-         </property>
-        </widget>
-        <widget class="QLabel" name="OtherRadioTitle">
-         <property name="geometry">
-          <rect>
-           <x>280</x>
-           <y>10</y>
-           <width>161</width>
-           <height>31</height>
-          </rect>
-         </property>
-         <property name="layoutDirection">
-          <enum>Qt::LeftToRight</enum>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">#OtherRadioTitle
+            </property>
+            <property name="text">
+             <string>  Liste en cours : </string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QTableWidget" name="otherListsTable_2">
+            <property name="maximumSize">
+             <size>
+              <width>300</width>
+              <height>16777215</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLabel" name="OtherListsLabel_2">
+            <property name="styleSheet">
+             <string notr="true">#OtherListsTitle
 {
 
    border : 1px solid;
 
 	border-color : rgb(204, 204, 204);
 }</string>
-         </property>
-         <property name="text">
-          <string> Autres Radios :</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-        </widget>
-        <widget class="QScrollArea" name="ScrollOtherRadios">
-         <property name="geometry">
-          <rect>
-           <x>10</x>
-           <y>40</y>
-           <width>651</width>
-           <height>161</height>
-          </rect>
-         </property>
-         <property name="widgetResizable">
-          <bool>true</bool>
-         </property>
-         <widget class="QWidget" name="OhterRadioList">
-          <property name="geometry">
-           <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>649</width>
-            <height>159</height>
-           </rect>
-          </property>
-         </widget>
+            </property>
+            <property name="text">
+             <string> Autres Listes</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </widget>
        </widget>
        <widget class="QWidget" name="Historique">
@@ -404,7 +361,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>719</width>
+     <width>858</width>
      <height>22</height>
     </rect>
    </property>

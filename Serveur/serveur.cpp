@@ -89,12 +89,15 @@ void Serveur::clientMessageLoop() {
     }
 }
 
+
+
 void Serveur::sendRequestToMPV(){
     QJsonObject jsonObject ;
 
+
 QJsonArray a ;
 a.append("loadfile");
-a.append(audio[0]);
+a.append(audio_files[0]);
 
     jsonObject["command"]=a;
     QByteArray bytes = QJsonDocument(jsonObject).toJson(QJsonDocument::Compact)+"\n";

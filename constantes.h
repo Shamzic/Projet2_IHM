@@ -36,7 +36,7 @@ enum speed {
   kVitesseDouble=1
 };
 
-const char * audio[]= {
+const char * const audio_files[]= {
     "Audio/Miley_Cyrus-Jolene.mp3",
     "Audio/Moana - I Am Moana.mp3"
 };
