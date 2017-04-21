@@ -13,9 +13,9 @@
 int main(int argc, char *argv[])
 {
     int r;
+    QApplication a(argc, argv);
     try {
         Serveur s;
-        QApplication a(argc, argv);
         //Automate m;
 
         // On connect le serveur à l'Automate

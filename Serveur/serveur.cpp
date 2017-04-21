@@ -15,12 +15,9 @@ const char kJsonParams[]="params";
 Serveur::Serveur(QObject *parent) :
     QObject(parent),
     m_server(new QLocalServer(this)),
-    m_client(new QLocalSocket(this)),
     mpv(new QLocalSocket(this))
 {
     qRegisterMetaType<signalType>("signalType");
-    m_running=true;
-    m_serverLoopThread = QtConcurrent::run(this,&Serveur::clientMessageLoop);
 
     mpv->connectToServer(MPV_SERVER_NAME,QIODevice::ReadWrite);
     if (mpv->waitForConnected())
@@ -35,14 +32,17 @@ Serveur::Serveur(QObject *parent) :
     if (!m_server->listen(serverName)) {
         throw m_server->errorString();
     }
-qDebug() << m_server->fullServerName();
+
     connect(m_server, SIGNAL(newConnection()), this, SLOT(connectionFromClient()));
+
+    m_running=true;
+    m_serverLoopThread = QtConcurrent::run(this,&Serveur::clientMessageLoop);
 
     sendRequestToMPV();
 }
 
 Serveur::~Serveur() {
-qDebug() << "del server" ;
+    qDebug() << "del server" ;
     mpv->disconnectFromServer();
     if(m_client)m_client->abort();
     m_server->close();
@@ -56,27 +56,37 @@ void Serveur::connectionFromClient() {
     m_client= m_server->nextPendingConnection();
     connect(m_client, SIGNAL(disconnected()), m_client, SLOT(deleteLater()));
     connect(m_client, SIGNAL(disconnected()), this, SLOT(clientDisconnected()));
+    qDebug() << "connexion client" ;
 }
 
 // slot appelé lorsqu'un client se déconnecte
 void Serveur::clientDisconnected() {
+    qDebug() << "déconnexion client" ;
     m_client=NULL;
 }
 
 
-/*?????*/
+// lire les messages des clients
+// on reçoit un truc du genre { "signal" = numero_signal ,
+//    "params" = [<un variant map avec des parametres>] }
+//jsonObject["signal"]=sig;
+//jsonObject[kJsonParams]=QJsonObject::fromVariantMap(params);
 void Serveur::clientMessageLoop() {
-    while (m_running){
-        QDataStream in(mpv);
-        if (in.atEnd()){ // Rien dans la file d'attente
+    while (m_running) {
+        QDataStream in(m_client);
+        if ( in.atEnd() ) { // Rien dans la file d'attente
             QThread::msleep(100); // On attend 1/10s et on continue
             continue;
         }
+        qDebug() << "msg reçu";
         QString str=QString(in.device()->readLine());
         QByteArray a=str.toUtf8();
         QJsonParseError error;
         QJsonDocument jDoc=QJsonDocument::fromJson(a, &error);
         QJsonObject jsonObject=jDoc.object();
+
+        qDebug() << jsonObject[kJsonSignal].toInt();
+
         emit signalFromServer((signalType)jsonObject[kJsonSignal].toInt(),
         jsonObject[kJsonParams].toObject().toVariantMap());
     }
@@ -107,7 +117,7 @@ a.append(70);
         QVariantMap json_map = jsonObject2.toVariantMap();
         qDebug() << json_map["error"].toString() ;
     } else {
-        qDebug() << "ff"  ;
+        qDebug() << "fuck"  ;
     }
 }
 

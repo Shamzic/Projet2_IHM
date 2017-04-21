@@ -15,8 +15,7 @@
 #include <QVector>
 #include "automate.h"
 
-#define MPV_SERVER_NAME "/tmp/mpv-socket" //"\\\\.\\pipe\\mpv-pipe"
-                                          //"/tmp/mpv-socket"
+#define MPV_SERVER_NAME "/tmp/mpv-socket"
 #define AUTOMATE_SERVER_NAME "/tmp/client-socket"
 
 extern const char kJsonSignal[];

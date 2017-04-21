@@ -18,7 +18,7 @@ Client::Client(QObject *parent) :
     qRegisterMetaType<signalType>("signalType");
 
     m_socket->connectToServer(SERVER_NAME);
-    if (m_socket->waitForConnected(6000)) {
+    if (m_socket->waitForConnected()) {
          qDebug() << "connected to server";
     } else {
         throw m_socket->errorString();
@@ -56,7 +56,7 @@ void Client::serverMessageLoop() {
 // envoyer un message au serveur
 void Client::sendRequestToSocket(signalType sig, QVariantMap params) {
     QJsonObject jsonObject ;
-    jsonObject["signal"]=sig;
+    jsonObject[kJsonSignal]=sig;
     jsonObject[kJsonParams]=QJsonObject::fromVariantMap(params);
     QByteArray bytes = QJsonDocument(jsonObject).toJson(QJsonDocument::Compact)+"\n";
     if (m_socket!=NULL) {
