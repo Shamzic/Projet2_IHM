@@ -11,6 +11,23 @@
 #include <QObject>
 #include <QLocalSocket>
 #include <QtConcurrent/QtConcurrent>
+#include <QVariantMap>
+
+#include <QDebug>
+
+#define SERVER_NAME "/tmp/client-socket"
+
+extern const char kJsonSignal[];
+extern const char kJsonParams[];
+
+extern const char kVitesseLecture[];
+extern const char kParamSwitch[];
+
+enum signalType {
+    kSignalPlay,
+    kSignalPause,
+    kSignalEnd
+};
 
 class Client : public QObject
 {
@@ -24,11 +41,14 @@ private:
     void serverMessageLoop();
     bool m_running;
     QFuture<void> m_clientLoopThread;
+    void sendRequestToSocket(signalType sig, QVariantMap params);
 
 signals:
+    //msg du client vers l'UI
     void signalFromClient(signalType, QVariantMap);
 
 public slots:
+    //msg de l'UI vers le client
     void messageFromUI(signalType, QVariantMap);
 
 };

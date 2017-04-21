@@ -8,6 +8,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QVariantMap>
+#include "client.h"
 
 namespace Ui {
 class MainWindow;
@@ -23,6 +25,15 @@ public:
 
 private:
     Ui::MainWindow *ui;
+
+signals:
+    // Le format de communication vers le client
+    void signalUI(signalType, QVariantMap);
+
+public slots:
+    // Messages reçus du client
+    void message(signalType, QVariantMap);
+    void playbuttonClicked(bool);
 };
 
 #endif // MAINWINDOW_H

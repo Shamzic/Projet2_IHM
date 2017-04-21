@@ -22,35 +22,46 @@ Serveur::Serveur(QObject *parent) :
     m_running=true;
     m_serverLoopThread = QtConcurrent::run(this,&Serveur::clientMessageLoop);
 
-    mpv->connectToServer(SERVER_NAME,QIODevice::ReadWrite);
+    mpv->connectToServer(MPV_SERVER_NAME,QIODevice::ReadWrite);
     if (mpv->waitForConnected())
         qDebug() << "connected to mpv";
     else {
         throw mpv->errorString();
     }
 
+    // lancer le serveur pour parler avec les clients
+    QString serverName(AUTOMATE_SERVER_NAME);
+    QLocalServer::removeServer(serverName);
+    if (!m_server->listen(serverName)) {
+        throw m_server->errorString();
+    }
+
+    connect(m_server, SIGNAL(newConnection()), this, SLOT(connectionFromClient()));
+
     sendRequestToMPV();
-     sendRequestToMPV2();
 }
 
 Serveur::~Serveur() {
     mpv->disconnectFromServer();
+    if(m_client)m_client->abort();
+    m_server->close();
     m_running = false;
     m_serverLoopThread.waitForFinished();
 }
 
-/*
+// slot appelé lorsqu'un client se connecte
 void Serveur::connectionFromClient() {
-    if(m_client) return; // Un seul client
+    if (m_client) return; // Un seul client pour l'instant...
     m_client= m_server->nextPendingConnection();
     connect(m_client, SIGNAL(disconnected()), m_client, SLOT(deleteLater()));
     connect(m_client, SIGNAL(disconnected()), this, SLOT(clientDisconnected()));
 }
 
-void Serveur::clientDisconnected(){
+// slot appelé lorsqu'un client se déconnecte
+void Serveur::clientDisconnected() {
     m_client=NULL;
 }
-*/
+
 
 /*?????*/
 void Serveur::clientMessageLoop() {
@@ -94,35 +105,6 @@ a.append(70);
         QJsonObject jsonObject2=jDoc.object();
         QVariantMap json_map = jsonObject2.toVariantMap();
         qDebug() << json_map["error"].toString() ;
-    } else {
-        qDebug() << "ff"  ;
-    }
-}
-
-void Serveur::sendRequestToMPV2(){
-    QJsonObject jsonObject ;
-
-QJsonArray a ;
-a.append("get_property");
-a.append("volume");
-
-    jsonObject["command"]=a;
-    QByteArray bytes = QJsonDocument(jsonObject).toJson(QJsonDocument::Compact)+"\n";
-    if (mpv!=NULL) {
-      mpv->write(bytes.data(), bytes.length());
-      mpv->flush();
-    }
-
-    QDataStream in(mpv);
-    if (mpv->waitForReadyRead()) {
-        QString str=QString(in.device()->readLine());
-        QByteArray an=str.toUtf8();
-        QJsonParseError error;
-        QJsonDocument jDoc=QJsonDocument::fromJson(an, &error);
-        QJsonObject jsonObject2=jDoc.object();
-        QVariantMap json_map = jsonObject2.toVariantMap();
-        qDebug() << json_map["error"].toString() ;
-        qDebug() << json_map["data"].toString() ;
     } else {
         qDebug() << "ff"  ;
     }
