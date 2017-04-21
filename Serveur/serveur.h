@@ -14,8 +14,8 @@
 #include <QtConcurrent/QtConcurrent>
 #include "automate.h"
 
-#define SERVER_NAME "/tmp/mpv-socket"
-
+#define SERVER_NAME "\\\\.\\pipe\\mpv-pipe" //"\\\\.\\pipe\\mpv-pipe"
+                                      //"/tmp/mpv-socket"
 extern const char kJsonSignal[];
 extern const char kJsonParams[];
 
