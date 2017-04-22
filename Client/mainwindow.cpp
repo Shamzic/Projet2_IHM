@@ -7,6 +7,15 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include "taglib/tag.h"
+#include "taglib/fileref.h"
+#include "taglib/tstring.h"
+#include <taglib/tag.h>
+#include <stdlib.h>
+#include <QFileInfo>
+
+using namespace TagLib;
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -14,8 +23,20 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     this->setWindowTitle("Audio Player");
 
+    QString filepath = "../../../../";
+    filepath.append(QString(audio_files[0]));
+
+    TagLib::FileRef f(filepath.toStdString().c_str());
+    if(!f.isNull() && f.tag()) {
+        qDebug() << f.file()->name();
+        TagLib::Tag *tag = f.tag();
+        qDebug() << "ici";
+        qDebug() << tag->artist().toCString();
+    }
+
     int i;
     for (i=0; audio_files[i] != nullptr; i++) {
+
         QTreeWidgetItem *audio = new QTreeWidgetItem(ui->AudioTree);
         audio->setText(0, tr(audio_files[i]));
     }

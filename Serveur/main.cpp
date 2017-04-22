@@ -24,6 +24,7 @@ int main(int argc, char *argv[])
         QObject::connect(&s, SIGNAL(signalFromServer(signalType, QVariantMap)),
                             &m, SLOT(message(signalType, QVariantMap)));
 
+        QObject::connect(&s,SIGNAL(terminateSig()),&a,SLOT(quit()));
         r = a.exec();
     } catch (QString err) {
         std::cout << err.toStdString() << "\n";

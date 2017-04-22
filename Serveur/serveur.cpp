@@ -31,9 +31,11 @@ Serveur::Serveur(QObject *parent) :
     }
 
     connect(m_server, SIGNAL(newConnection()), this, SLOT(connectionFromClient()));
+    connect(mpv, SIGNAL(disconnected()), this, SLOT(endServer()));
 
     m_running=true;
     m_serverLoopThread = QtConcurrent::run(this,&Serveur::clientMessageLoop);
+    m_mpvEventLoopThread = QtConcurrent::run(this,&Serveur::MPVEventMessageLoop);
 }
 
 Serveur::~Serveur() {
@@ -43,6 +45,13 @@ Serveur::~Serveur() {
     m_server->close();
     m_running = false;
     m_serverLoopThread.waitForFinished();
+    m_mpvEventLoopThread.waitForFinished();
+}
+
+
+//mpv n'est plus accessible
+void Serveur::endServer() {
+    emit terminateSig();
 }
 
 // slot appelé lorsqu'un client se connecte
@@ -83,6 +92,25 @@ void Serveur::clientMessageLoop() {
 
         emit signalFromServer((signalType)jsonObject[kJsonSignal].toInt(),
         jsonObject[kJsonParams].toObject().toVariantMap());
+    }
+}
+
+void Serveur::MPVEventMessageLoop() {
+    while (m_running) {
+        QDataStream in(mpv);
+        if ( in.atEnd() ) { // Rien dans la file d'attente
+            QThread::msleep(100); // On attend 1/10s et on continue
+            continue;
+        }
+        QString str=QString(in.device()->readLine());
+        QByteArray a=str.toUtf8();
+        QJsonParseError error;
+        QJsonDocument jDoc=QJsonDocument::fromJson(a, &error);
+        QJsonObject jsonObject=jDoc.object();
+
+        qDebug() << "event message MPV reçu";
+        QVariantMap json_map = jsonObject.toVariantMap();
+        qDebug() << json_map["event"].toString() ;
     }
 }
 

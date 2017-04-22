@@ -34,3 +34,18 @@ HEADERS  += \
     ../constantes.h
 
 CONFIG += c++11
+
+LIBS += -lz
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../lib/release/ -ltag
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../lib/debug/ -ltag
+else:unix: LIBS += -L$$PWD/../lib/ -ltag
+
+INCLUDEPATH += $$PWD/../include
+DEPENDPATH += $$PWD/../include
+
+win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/../lib/release/libtag.a
+else:win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/../lib/debug/libtag.a
+else:win32:!win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/../lib/release/tag.lib
+else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/../lib/debug/tag.lib
+else:unix: PRE_TARGETDEPS += $$PWD/../lib/libtag.a

@@ -22,7 +22,7 @@
  */
 VolumeController::VolumeController(QWidget *parent) :
     QWidget(parent),
-    volume(3),
+    volume(50),
     audioControl(":/images/volumecontrol.png"),
     audioSlider(":/images/volumeslider.png"),
     muteSymbol(":/images/audio_off.png"),

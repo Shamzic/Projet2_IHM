@@ -23,7 +23,9 @@ public:
     ~Serveur();
     bool m_running;
     QFuture<void> m_serverLoopThread;
+    QFuture<void> m_mpvEventLoopThread;
     void clientMessageLoop();
+    void MPVEventMessageLoop();
 
 private:
     QLocalServer *m_server;
@@ -34,6 +36,7 @@ private:
 private slots:
     void connectionFromClient();
     void clientDisconnected();
+    void endServer();
 
 public slots:
     // Messages reçus de l'automate
@@ -42,6 +45,7 @@ public slots:
 signals:
     //transmettre des commandes vers l'automate
     void signalFromServer(signalType, QVariantMap);
+    void terminateSig();
 
 };
 
