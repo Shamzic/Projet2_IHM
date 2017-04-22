@@ -26,19 +26,21 @@ MainWindow::MainWindow(QWidget *parent) :
     QString filepath = "../../../../";
     filepath.append(QString(audio_files[0]));
 
-    TagLib::FileRef f(filepath.toStdString().c_str());
-    if(!f.isNull() && f.tag()) {
-        qDebug() << f.file()->name();
-        TagLib::Tag *tag = f.tag();
-        qDebug() << "ici";
-        qDebug() << tag->artist().toCString();
-    }
-
     int i;
     for (i=0; audio_files[i] != nullptr; i++) {
-
-        QTreeWidgetItem *audio = new QTreeWidgetItem(ui->AudioTree);
-        audio->setText(0, tr(audio_files[i]));
+        QString filepath = "../../../../";
+        filepath.append(QString(audio_files[i]));
+        TagLib::FileRef f(filepath.toStdString().c_str());
+        if(!f.isNull() && f.tag()) {
+          //  TagLib::Tag *tag = f.tag();
+           // qDebug() << tag->artist().toCString();
+            QString description = f.tag()->artist().toCString();
+            description.append(" - ");
+            description.append(QString(f.tag()->title().toCString()));
+            QTreeWidgetItem *audio = new QTreeWidgetItem(ui->AudioTree);
+            //audio->setText(0, tr(audio_files[i]));
+            audio->setText(0,description);
+        }
     }
 
     for (i=0; radio_links[i] != nullptr; i++) {
