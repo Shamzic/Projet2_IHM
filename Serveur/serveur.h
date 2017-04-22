@@ -29,7 +29,7 @@ private:
     QLocalServer *m_server;
     QLocalSocket * m_client;
     QLocalSocket *mpv=NULL;
-    void sendRequestToMPV();
+    void sendRequestToMPV(QJsonObject jsonObject);
 
 private slots:
     void connectionFromClient();

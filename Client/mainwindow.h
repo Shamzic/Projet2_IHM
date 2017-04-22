@@ -34,6 +34,8 @@ public slots:
     // Messages reçus du client
     void message(signalType, QVariantMap);
     void playbuttonClicked(bool);
+
+private slots:
 };
 
 #endif // MAINWINDOW_H

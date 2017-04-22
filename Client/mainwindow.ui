@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>858</width>
-    <height>461</height>
+    <width>828</width>
+    <height>458</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,7 +19,7 @@
      <rect>
       <x>20</x>
       <y>10</y>
-      <width>818</width>
+      <width>791</width>
       <height>381</height>
      </rect>
     </property>
@@ -189,166 +189,56 @@
      <item row="1" column="0">
       <widget class="QTabWidget" name="tabs">
        <property name="currentIndex">
-        <number>1</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="Listes">
         <attribute name="title">
          <string>Listes</string>
         </attribute>
-        <widget class="QWidget" name="gridLayoutWidget_2">
+        <widget class="QTreeWidget" name="AudioTree">
          <property name="geometry">
           <rect>
            <x>10</x>
-           <y>0</y>
-           <width>791</width>
+           <y>10</y>
+           <width>761</width>
            <height>241</height>
           </rect>
          </property>
-         <layout class="QGridLayout" name="gridLayout_2">
-          <item row="1" column="0">
-           <widget class="QTableWidget" name="CurrentMusicsTable"/>
-          </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="CurrentListLabel">
-            <property name="styleSheet">
-             <string notr="true">#CurrentList 
-{
-	border: 1px solid;
-	border-color : rgb(204, 204, 204);
-}</string>
-            </property>
-            <property name="text">
-             <string>  Liste en cours : </string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QTableWidget" name="otherListsTable">
-            <property name="maximumSize">
-             <size>
-              <width>300</width>
-              <height>16777215</height>
-             </size>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QLabel" name="OtherListsLabel">
-            <property name="styleSheet">
-             <string notr="true">#OtherListsTitle
-{
-
-   border : 1px solid;
-
-	border-color : rgb(204, 204, 204);
-}</string>
-            </property>
-            <property name="text">
-             <string> Autres Listes</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
-           </widget>
-          </item>
-         </layout>
+         <column>
+          <property name="text">
+           <string>Listes</string>
+          </property>
+         </column>
         </widget>
        </widget>
        <widget class="QWidget" name="Radios">
         <attribute name="title">
          <string>Radios</string>
         </attribute>
-        <widget class="QWidget" name="gridLayoutWidget_3">
+        <widget class="QListWidget" name="RadioList">
          <property name="geometry">
           <rect>
            <x>10</x>
-           <y>0</y>
-           <width>791</width>
+           <y>10</y>
+           <width>761</width>
            <height>241</height>
           </rect>
          </property>
-         <layout class="QGridLayout" name="gridLayout_3">
-          <item row="1" column="0">
-           <widget class="QTableWidget" name="CurrentMusicsTable_2"/>
-          </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="CurrentListLabel_2">
-            <property name="styleSheet">
-             <string notr="true">#CurrentList 
-{
-	border: 1px solid;
-	border-color : rgb(204, 204, 204);
-}</string>
-            </property>
-            <property name="text">
-             <string>  Liste en cours : </string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QTableWidget" name="otherListsTable_2">
-            <property name="maximumSize">
-             <size>
-              <width>300</width>
-              <height>16777215</height>
-             </size>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QLabel" name="OtherListsLabel_2">
-            <property name="styleSheet">
-             <string notr="true">#OtherListsTitle
-{
-
-   border : 1px solid;
-
-	border-color : rgb(204, 204, 204);
-}</string>
-            </property>
-            <property name="text">
-             <string> Autres Listes</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
-           </widget>
-          </item>
-         </layout>
         </widget>
        </widget>
        <widget class="QWidget" name="Historique">
         <attribute name="title">
          <string>Historique</string>
         </attribute>
-        <widget class="QScrollArea" name="ScrollListHistorique">
+        <widget class="QListWidget" name="HistoriqueList">
          <property name="geometry">
           <rect>
            <x>10</x>
            <y>10</y>
-           <width>661</width>
-           <height>191</height>
+           <width>761</width>
+           <height>241</height>
           </rect>
          </property>
-         <property name="widgetResizable">
-          <bool>true</bool>
-         </property>
-         <widget class="QWidget" name="ListHistorique">
-          <property name="geometry">
-           <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>659</width>
-            <height>189</height>
-           </rect>
-          </property>
-         </widget>
         </widget>
        </widget>
       </widget>
@@ -361,7 +251,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>858</width>
+     <width>828</width>
      <height>22</height>
     </rect>
    </property>

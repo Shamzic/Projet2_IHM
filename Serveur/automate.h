@@ -30,6 +30,8 @@ private:
     QState *statePlay;
     QState *statePause;
     QFinalState *stateFin;
+    QString path;
+    int length = 0;
     void setupMessages();
     void cleanup();
 

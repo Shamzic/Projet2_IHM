@@ -53,9 +53,12 @@ Automate::Automate(QObject *parent) : QObject(parent)
     setupMessages();
 }
 
+// messages reçu depuis le serveur
 void Automate::message(signalType sig, QVariantMap params) {
     switch(sig){
         case kSignalPlay:
+            path = params["path"].toString();
+            length = 20;
             setPlay(true);
             break;
         case kSignalPause:
@@ -73,6 +76,9 @@ void Automate::message(signalType sig, QVariantMap params) {
 void Automate::setupMessages() {
     QObject::connect(statePlay, &QState::entered, [this](){
       qDebug()<<"entree state play";
+      QVariantMap params;
+      params[kParamPath]=QVariant(path);
+      emit signalLecteur(kSignalPlay, params);
     });
 
     QObject::connect(statePlay, &QState::exited, [this](){
@@ -81,10 +87,14 @@ void Automate::setupMessages() {
 
     QObject::connect(statePause, &QState::entered, [this](){
       qDebug()<<"entree state pause";
+      QVariantMap params;
+      emit signalLecteur(kSignalPause, params);
     });
 
     QObject::connect(statePause, &QState::exited, [this](){
       qDebug()<<"sortie state pause";
+      QVariantMap params;
+      emit signalLecteur(kSignalEndPause,params);
     });
 }
 

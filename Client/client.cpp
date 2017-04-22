@@ -54,6 +54,7 @@ void Client::sendRequestToSocket(signalType sig, QVariantMap params) {
     QJsonObject jsonObject ;
     jsonObject[kJsonSignal]=sig;
     jsonObject[kJsonParams]=QJsonObject::fromVariantMap(params);
+
     QByteArray bytes = QJsonDocument(jsonObject).toJson(QJsonDocument::Compact)+"\n";
     if (m_socket!=NULL) {
         m_socket->write(bytes.data(), bytes.length());

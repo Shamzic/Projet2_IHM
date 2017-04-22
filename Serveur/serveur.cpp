@@ -34,8 +34,6 @@ Serveur::Serveur(QObject *parent) :
 
     m_running=true;
     m_serverLoopThread = QtConcurrent::run(this,&Serveur::clientMessageLoop);
-
-    sendRequestToMPV();
 }
 
 Serveur::~Serveur() {
@@ -75,14 +73,13 @@ void Serveur::clientMessageLoop() {
             QThread::msleep(100); // On attend 1/10s et on continue
             continue;
         }
-        qDebug() << "msg reçu";
         QString str=QString(in.device()->readLine());
         QByteArray a=str.toUtf8();
         QJsonParseError error;
         QJsonDocument jDoc=QJsonDocument::fromJson(a, &error);
         QJsonObject jsonObject=jDoc.object();
 
-        qDebug() << jsonObject[kJsonSignal].toInt();
+        qDebug() << "msg reçu";
 
         emit signalFromServer((signalType)jsonObject[kJsonSignal].toInt(),
         jsonObject[kJsonParams].toObject().toVariantMap());
@@ -91,15 +88,7 @@ void Serveur::clientMessageLoop() {
 
 
 
-void Serveur::sendRequestToMPV(){
-    QJsonObject jsonObject ;
-
-
-QJsonArray a ;
-a.append("loadfile");
-a.append(audio_files[0]);
-
-    jsonObject["command"]=a;
+void Serveur::sendRequestToMPV(QJsonObject jsonObject){
     QByteArray bytes = QJsonDocument(jsonObject).toJson(QJsonDocument::Compact)+"\n";
     if (mpv!=NULL) {
       mpv->write(bytes.data(), bytes.length());
@@ -122,7 +111,34 @@ a.append(audio_files[0]);
 
 
 //message de l'automate
-void Serveur::message(signalType,QVariantMap) {
-
+void Serveur::message(signalType sig,QVariantMap varmap) {
+    QJsonObject jsonObject ;
+    QJsonArray a ;
+    switch (sig) {
+        case kSignalPlay:
+            a.append("loadfile");
+            a.append(varmap[kParamPath].toString());
+            jsonObject["command"]=a;
+            sendRequestToMPV(jsonObject);
+            break;
+        case kSignalPause:
+            a.append("set_property");
+            a.append("pause");
+            a.append(true);
+            jsonObject["command"]=a;
+            sendRequestToMPV(jsonObject);
+            break;
+        case kSignalEndPause:
+            a.append("set_property");
+            a.append("pause");
+            a.append(false);
+            jsonObject["command"]=a;
+            sendRequestToMPV(jsonObject);
+            break;
+        case kSignalEnd:
+            break;
+        default:
+            break;
+    }
 }
 
