@@ -9,6 +9,7 @@
 
 #include <QMainWindow>
 #include <QVariantMap>
+#include <QCloseEvent>
 #include "client.h"
 
 namespace Ui {
@@ -29,11 +30,13 @@ private:
 signals:
     // Le format de communication vers le client
     void signalUI(signalType, QVariantMap);
+    void terminatingApp();
 
 public slots:
     // Messages reçus du client
     void message(signalType, QVariantMap);
     void playbuttonClicked(bool);
+    void closeEvent(QCloseEvent *event);
 
 private slots:
 };

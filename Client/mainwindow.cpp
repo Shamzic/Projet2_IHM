@@ -23,9 +23,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     this->setWindowTitle("Audio Player");
 
-    QString filepath = "../../../../";
-    filepath.append(QString(audio_files[0]));
-
     int i;
     for (i=0; audio_files[i] != nullptr; i++) {
         QString filepath = "../../../../";
@@ -40,6 +37,7 @@ MainWindow::MainWindow(QWidget *parent) :
             QTreeWidgetItem *audio = new QTreeWidgetItem(ui->AudioTree);
             //audio->setText(0, tr(audio_files[i]));
             audio->setText(0,description);
+            audio->setData(0,Qt::UserRole,QVariant(audio_files[i]));
         }
     }
 
@@ -50,16 +48,19 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->playbutton,SIGNAL(changedState(bool)),this,SLOT(playbuttonClicked(bool)));
 }
 
-MainWindow::~MainWindow()
-{
+MainWindow::~MainWindow() {
     delete ui;
+}
+
+void MainWindow::closeEvent(QCloseEvent *) {
+    emit terminatingApp();
 }
 
 // envoyer message socket
 // varmap ??
 void MainWindow::playbuttonClicked(bool isPlaying) {
     QVariantMap varmap;
-    varmap[kParamPath] = QVariant(ui->AudioTree->currentItem()->text(0));
+    varmap[kParamPath] = ui->AudioTree->currentItem()->data(0,Qt::UserRole);
 
     if (isPlaying) {
         emit signalUI(kSignalPlay,varmap);

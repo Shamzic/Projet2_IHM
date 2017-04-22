@@ -29,6 +29,7 @@ private:
     QStateMachine *Lecteur;
     QState *statePlay;
     QState *statePause;
+    QState *stateReprendre;
     QFinalState *stateFin;
     QString path;
     int length = 0;
