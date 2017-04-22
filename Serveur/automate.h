@@ -31,6 +31,7 @@ private:
     QState *statePause;
     QState *stateReprendre;
     QFinalState *stateFin;
+    bool playing;
     QString path;
     int length = 0;
     void setupMessages();
@@ -43,8 +44,8 @@ signals:
     void signalPause();
 
 private slots:
-    void setPlay(bool);
-    void setPause(bool);
+    void setPlay();
+    void setPause();
 
 public slots:
     // Messages du serveur vers l'automate

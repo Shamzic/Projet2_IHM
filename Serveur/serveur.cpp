@@ -35,7 +35,7 @@ Serveur::Serveur(QObject *parent) :
 
     m_running=true;
     m_serverLoopThread = QtConcurrent::run(this,&Serveur::clientMessageLoop);
-    m_mpvEventLoopThread = QtConcurrent::run(this,&Serveur::MPVEventMessageLoop);
+   // m_mpvEventLoopThread = QtConcurrent::run(this,&Serveur::MPVEventMessageLoop);
 }
 
 Serveur::~Serveur() {
@@ -45,7 +45,7 @@ Serveur::~Serveur() {
     m_server->close();
     m_running = false;
     m_serverLoopThread.waitForFinished();
-    m_mpvEventLoopThread.waitForFinished();
+    //m_mpvEventLoopThread.waitForFinished();
 }
 
 
@@ -95,6 +95,7 @@ void Serveur::clientMessageLoop() {
     }
 }
 
+/*
 void Serveur::MPVEventMessageLoop() {
     while (m_running) {
         QDataStream in(mpv);
@@ -108,12 +109,12 @@ void Serveur::MPVEventMessageLoop() {
         QJsonDocument jDoc=QJsonDocument::fromJson(a, &error);
         QJsonObject jsonObject=jDoc.object();
 
-        qDebug() << "event message MPV reçu";
+        qDebug() << "event message MPV reçu :";
         QVariantMap json_map = jsonObject.toVariantMap();
         qDebug() << json_map["event"].toString() ;
     }
 }
-
+*/
 
 
 void Serveur::sendRequestToMPV(QJsonObject jsonObject){

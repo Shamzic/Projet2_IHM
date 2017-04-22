@@ -23,9 +23,9 @@ public:
     ~Serveur();
     bool m_running;
     QFuture<void> m_serverLoopThread;
-    QFuture<void> m_mpvEventLoopThread;
+    //QFuture<void> m_mpvEventLoopThread;
     void clientMessageLoop();
-    void MPVEventMessageLoop();
+    //void MPVEventMessageLoop();
 
 private:
     QLocalServer *m_server;

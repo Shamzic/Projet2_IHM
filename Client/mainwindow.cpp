@@ -46,6 +46,9 @@ MainWindow::MainWindow(QWidget *parent) :
     }
 
     connect(ui->playbutton,SIGNAL(changedState(bool)),this,SLOT(playbuttonClicked(bool)));
+    connect(ui->AudioTree,SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)),
+                        this,SLOT(audioDoubleClicked(QTreeWidgetItem *,int)));
+    connect(this,SIGNAL(changeButtonState(bool)),ui->playbutton,SLOT(playOrPause(bool)));
 }
 
 MainWindow::~MainWindow() {
@@ -71,4 +74,12 @@ void MainWindow::playbuttonClicked(bool isPlaying) {
 
 // message du serveur
 void MainWindow::message(signalType, QVariantMap) {
+}
+
+void MainWindow::audioDoubleClicked(QTreeWidgetItem *item, int column) {
+qDebug() << "double click on audio";
+    QVariantMap varmap;
+    varmap[kParamPath] = item->data(column,Qt::UserRole);
+    emit changeButtonState(true);
+    emit signalUI(kSignalChangeAudio,varmap);
 }

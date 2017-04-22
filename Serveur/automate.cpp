@@ -20,7 +20,9 @@
 
  #include <QDebug>
 
-Automate::Automate(QObject *parent) : QObject(parent)
+Automate::Automate(QObject *parent) :
+    QObject(parent),
+    playing(false)
 {
     // Timer durée des
     TpsLecture = new QTimer(this);
@@ -64,13 +66,19 @@ void Automate::message(signalType sig, QVariantMap params) {
         case kSignalPlay:
             path = params["path"].toString();
             length = 20;
-            setPlay(true);
+            setPlay();
             break;
         case kSignalPause:
-            setPause(true);
+            setPause();
             break;
         case kSignalEnd:
             cleanup();
+            break;
+        case kSignalChangeAudio:
+            cleanup();
+            path = params["path"].toString();
+            length = 20;
+            setPlay();
             break;
         default:
             break;
@@ -115,18 +123,21 @@ void Automate::cleanup() {
     qDebug() << "cleanup" ;
     TpsLecture->stop();
     Lecteur->stop();
+    playing = false;
 }
 
 
-void Automate::setPlay(bool){
-    if (!Lecteur->isRunning()) {
+void Automate::setPlay(){
+    qDebug() << "ici";
+    if (!playing) {
         Lecteur->setInitialState(statePlay);
         Lecteur->start();
+        playing = true ;
         qDebug() << "debut machine" ;
     }
     emit signalPlay();
 }
 
-void Automate::setPause(bool){
+void Automate::setPause(){
     emit signalPause();
 }
