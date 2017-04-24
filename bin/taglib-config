@@ -14,10 +14,10 @@ EOH
 	exit 1;
 }
 
-prefix=/Users/Caty/Downloads/taglib-1.11.1/“/Users/Caty/IHM_projet_2/lib”
-exec_prefix=/Users/Caty/Downloads/taglib-1.11.1/“/Users/Caty/IHM_projet_2/lib”
-libdir=/Users/Caty/IHM_projet_2/lib
-includedir=/Users/Caty/IHM_projet_2/include
+prefix=/home/caty/Documents/projet_IHM
+exec_prefix=/home/caty/Documents/projet_IHM
+libdir=/home/caty/Documents/projet_IHM/lib
+includedir=/home/caty/Documents/projet_IHM/include
 
 flags=""
 
