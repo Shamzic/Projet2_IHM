@@ -1,3 +1,9 @@
-# Projet2_IHM
+# Projet2_IHM  
 
-Yo les frérots
+## Exécution  
+
+Lancer mpv dans le répertoire principal via la commande :  
+mpv --idle --input-ipc-server=/tmp/mpv-socket  
+  
+Lancer le serveur  
+Lancer le ou les clients  
