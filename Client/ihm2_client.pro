@@ -44,10 +44,11 @@ RESOURCES += \
 
 CONFIG += c++11
 
+
 LIBS += -ldrm
 
-
-unix|win32: LIBS += -L$$PWD/../lib/ -ltag
+!macx:LIBS += -L$$PWD/../lib/ -ltag
+macx:LIBS += -L$$PWD/../lib/ -ltag -lz
 
 INCLUDEPATH += $$PWD/../include
 DEPENDPATH += $$PWD/../include

@@ -11,8 +11,8 @@
 #include "taglib/fileref.h"
 #include "taglib/tstring.h"
 #include <taglib/tag.h>
-#include <stdlib.h>
-#include <QFileInfo>
+
+#include <QDir>
 
 using namespace TagLib;
 
@@ -25,9 +25,17 @@ MainWindow::MainWindow(QWidget *parent) :
 
     int i;
     for (i=0; audio_files[i] != nullptr; i++) {
-        QString filepath = "../";//QString filepath = "../../../../";
+
+#ifdef Q_WS_MACX
+        QString filepath = "../../../../";
+#else
+        QString filepath = "../";
+#endif
+        qDebug() << QDir::currentPath();
+
         filepath.append(QString(audio_files[i]));
         TagLib::FileRef f(filepath.toStdString().c_str());
+        qDebug() << filepath.toStdString().c_str();
         if(!f.isNull() && f.tag()) {
           //  TagLib::Tag *tag = f.tag();
            // qDebug() << tag->artist().toCString();

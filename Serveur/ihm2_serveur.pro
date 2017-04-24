@@ -35,17 +35,13 @@ HEADERS  += \
 
 CONFIG += c++11
 
-LIBS += -lz -ldrm
+LIBS += -ldrm
 
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../lib/release/ -ltag
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../lib/debug/ -ltag
-else:unix: LIBS += -L$$PWD/../lib/ -ltag
+!macx:LIBS += -L$$PWD/../lib/ -ltag
+macx:LIBS += -L$$PWD/../lib/ -ltag -lz
 
 INCLUDEPATH += $$PWD/../include
 DEPENDPATH += $$PWD/../include
 
-win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/../lib/release/libtag.a
-else:win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/../lib/debug/libtag.a
-else:win32:!win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/../lib/release/tag.lib
-else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/../lib/debug/tag.lib
-else:unix: PRE_TARGETDEPS += $$PWD/../lib/libtag.a
+win32:!win32-g++: PRE_TARGETDEPS += $$PWD/../lib/tag.lib
+else:unix|win32-g++: PRE_TARGETDEPS += $$PWD/../lib/libtag.a
