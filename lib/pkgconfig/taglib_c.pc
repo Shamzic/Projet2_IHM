@@ -1,0 +1,12 @@
+prefix=/home/caty/Documents/projet_IHM
+exec_prefix=/home/caty/Documents/projet_IHM
+libdir=/home/caty/Documents/projet_IHM/lib
+includedir=/home/caty/Documents/projet_IHM/include
+
+
+Name: TagLib C Bindings
+Description: Audio meta-data library (C bindings)
+Requires: taglib
+Version: 1.11.1
+Libs: -L/home/caty/Documents/projet_IHM/lib -ltag_c
+Cflags: -I/home/caty/Documents/projet_IHM/include/taglib 
