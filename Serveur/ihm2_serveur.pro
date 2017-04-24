@@ -35,9 +35,7 @@ HEADERS  += \
 
 CONFIG += c++11
 
-LIBS += -ldrm
-
-!macx:LIBS += -L$$PWD/../lib/ -ltag
+!macx:LIBS += -L$$PWD/../lib/ -ltag -ldrm
 macx:LIBS += -L$$PWD/../lib/ -ltag -lz
 
 INCLUDEPATH += $$PWD/../include
