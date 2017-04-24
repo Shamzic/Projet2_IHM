@@ -1,2 +1,6 @@
 *.pro.user
 build*
+bin/*
+lib/*
+include/*
+libMacOS/*

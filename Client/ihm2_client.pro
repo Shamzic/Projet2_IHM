@@ -46,10 +46,11 @@ CONFIG += c++11
 
 
 !macx:LIBS += -L$$PWD/../lib/ -ltag -ldrm
-macx:LIBS += -L$$PWD/../lib/ -ltag -lz
+macx:LIBS += -L$$PWD/../libMacOS/ -ltag -lz
 
 INCLUDEPATH += $$PWD/../include
 DEPENDPATH += $$PWD/../include
 
 win32:!win32-g++: PRE_TARGETDEPS += $$PWD/../lib/tag.lib
-else:unix|win32-g++: PRE_TARGETDEPS += $$PWD/../lib/libtag.a
+else:unix|win32-g++:!macx: PRE_TARGETDEPS += $$PWD/../lib/libtag.a
+else:macx: PRE_TARGETDEPS += $$PWD/../libMacOS/libtag.a
