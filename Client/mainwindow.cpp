@@ -25,7 +25,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     int i;
     for (i=0; audio_files[i] != nullptr; i++) {
-        QString filepath = "../../../../";
+        QString filepath = "../";//QString filepath = "../../../../";
         filepath.append(QString(audio_files[i]));
         TagLib::FileRef f(filepath.toStdString().c_str());
         if(!f.isNull() && f.tag()) {

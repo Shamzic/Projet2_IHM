@@ -35,7 +35,7 @@ HEADERS  += \
 
 CONFIG += c++11
 
-LIBS += -lz
+LIBS += -lz -ldrm
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../lib/release/ -ltag
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../lib/debug/ -ltag

@@ -44,6 +44,8 @@ RESOURCES += \
 
 CONFIG += c++11
 
+LIBS += -ldrm
+
 
 unix|win32: LIBS += -L$$PWD/../lib/ -ltag
 
