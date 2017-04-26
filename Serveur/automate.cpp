@@ -40,10 +40,6 @@ Automate::Automate(QObject *parent) :
     stateFin = new QFinalState(Lecteur);
 
     transVolume = new QSignalTransition(this,SIGNAL(signalVolume()));
-    stateAttenteAudio->addTransition(transVolume);
-    statePlay->addTransition(transVolume);
-    statePause->addTransition(transVolume);
-    stateReprendre->addTransition(transVolume);
     QObject::connect(transVolume, SIGNAL(triggered()),SLOT(changeVolume()));
 
     // attenteAudio vers play, si nouveau morceau
@@ -101,6 +97,7 @@ void Automate::message(signalType sig, QVariantMap params) {
             break;
         case kSignalVolume:
             volume = params[kParamVolume].toInt();
+            emit signalVolume();
         default:
             break;
     }
@@ -109,42 +106,50 @@ void Automate::message(signalType sig, QVariantMap params) {
 /* Messages vers le serveur */
 void Automate::setupMessages() {
     QObject::connect(stateAttenteAudio, &QState::entered, [this](){
-      qDebug()<<"entree attente audio";
+        stateAttenteAudio->addTransition(transVolume);
+        qDebug()<<"entree attente audio";
     });
 
     QObject::connect(stateAttenteAudio, &QState::exited, [this](){
-      qDebug()<<"sortie attente audio";
+        stateAttenteAudio->removeTransition(transVolume);
+        qDebug()<<"sortie attente audio";
     });
 
     QObject::connect(statePlay, &QState::entered, [this](){
-      qDebug()<<"entree state play";
-      QVariantMap params;
-      params[kParamPath]=QVariant(path);
-      emit signalLecteur(kSignalPlay, params);
+        statePlay->addTransition(transVolume);
+        qDebug()<<"entree state play";
+        QVariantMap params;
+        params[kParamPath]=QVariant(path);
+        emit signalLecteur(kSignalPlay, params);
     });
 
     QObject::connect(statePlay, &QState::exited, [this](){
-      qDebug()<<"sortie state play";
+        statePlay->removeTransition(transVolume);
+        qDebug()<<"sortie state play";
     });
 
     QObject::connect(statePause, &QState::entered, [this](){
-      qDebug()<<"entree state pause";
-      QVariantMap params;
-      emit signalLecteur(kSignalPause, params);
+        statePause->addTransition(transVolume);
+        qDebug()<<"entree state pause";
+        QVariantMap params;
+        emit signalLecteur(kSignalPause, params);
     });
 
     QObject::connect(statePause, &QState::exited, [this](){
-      qDebug()<<"sortie state pause";
-      QVariantMap params;
-      emit signalLecteur(kSignalEndPause,params);
+        statePause->removeTransition(transVolume);
+        qDebug()<<"sortie state pause";
+        QVariantMap params;
+        emit signalLecteur(kSignalEndPause,params);
     });
 
     QObject::connect(stateReprendre, &QState::entered, [this](){
-      qDebug()<<"entree state reprendre";
+        stateReprendre->addTransition(transVolume);
+        qDebug()<<"entree state reprendre";
     });
 
     QObject::connect(stateReprendre, &QState::exited, [this](){
-      qDebug()<<"sortie state reprendre";
+        stateReprendre->removeTransition(transVolume);
+        qDebug()<<"sortie state reprendre";
     });
 }
 
@@ -155,6 +160,7 @@ void Automate::cleanup() {
 }
 
 void Automate::changeVolume() {
+    qDebug() << "changement volume";
     QVariantMap params;
     params[kParamVolume] = QVariant(volume);
     emit signalLecteur(kSignalVolume, params);

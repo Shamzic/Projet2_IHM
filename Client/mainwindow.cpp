@@ -18,7 +18,10 @@ using namespace TagLib;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow),
+    mute(false),
+    muteSymbol(":/images/audio_off.png"),
+    volumeOnSymbol(":/images/audio_on.png")
 {
     ui->setupUi(this);
     this->setWindowTitle("Audio Player");
@@ -56,6 +59,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->AudioTree,SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)),
                         this,SLOT(audioDoubleClicked(QTreeWidgetItem *,int)));
     connect(this,SIGNAL(changeButtonState(bool)),ui->playbutton,SLOT(playOrPause(bool)));
+    connect(ui->volumeBar,SIGNAL(volumeChanged(int)),this,SLOT(volumeBarClicked(int)));
+  //  connect(this,SIGNAL(changeVolumeBar(int)),ui->volumeBar,SLOT(changeVolume(int)));
 }
 
 MainWindow::~MainWindow() {
@@ -79,6 +84,19 @@ void MainWindow::playbuttonClicked(bool isPlaying) {
     }
 }
 
+void MainWindow::volumeBarClicked(int v) {
+    if (v==0) {
+        ui->muteButton->setIcon(QIcon(muteSymbol));
+        mute = true;
+    } else if (mute && v > 0 ){
+        ui->muteButton->setIcon(QIcon(volumeOnSymbol));
+        mute = false;
+    }
+    QVariantMap varmap;
+    varmap[kParamVolume] = v;
+    emit signalUI(kSignalVolume,varmap);
+}
+
 // message du serveur
 void MainWindow::message(signalType, QVariantMap) {
 }
@@ -89,4 +107,15 @@ qDebug() << "double click on audio";
     varmap[kParamPath] = item->data(column,Qt::UserRole);
     emit changeButtonState(true);
     emit signalUI(kSignalChangeAudio,varmap);
+}
+
+void MainWindow::on_muteButton_clicked() {
+    QVariantMap varmap;
+    if (mute) {
+        mute = false;
+        emit signalUI(kSignalMute,varmap);
+    } else {
+        mute = true;
+        emit signalUI(kSignalMute,varmap);
+    }
 }

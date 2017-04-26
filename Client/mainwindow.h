@@ -28,17 +28,22 @@ public:
 
 private:
     Ui::MainWindow *ui;
+    bool mute;
+    QPixmap muteSymbol;
+    QPixmap volumeOnSymbol;
 
 signals:
     // Le format de communication vers le client
     void signalUI(signalType, QVariantMap);
     void terminatingApp();
     void changeButtonState(bool);
+   // void changeVolumeBar(int);
 
 public slots:
     // Messages reçus du client
     void message(signalType, QVariantMap);
     void playbuttonClicked(bool);
+    void volumeBarClicked(int);
     void closeEvent(QCloseEvent *event);
 
 private slots:

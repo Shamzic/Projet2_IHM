@@ -136,7 +136,7 @@
           <number>8</number>
          </property>
          <item>
-          <widget class="VolumeController" name="widget" native="true">
+          <widget class="VolumeController" name="volumeBar" native="true">
            <property name="minimumSize">
             <size>
              <width>21</width>

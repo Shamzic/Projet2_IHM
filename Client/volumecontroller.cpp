@@ -24,11 +24,15 @@ VolumeController::VolumeController(QWidget *parent) :
     QWidget(parent),
     volume(50),
     audioControl(":/images/volumecontrol.png"),
-    audioSlider(":/images/volumeslider.png"),
-    muteSymbol(":/images/audio_off.png"),
-    volumeOnSymbol(":/images/audio_on.png")
+    audioSlider(":/images/volumeslider.png")
 {
 
+}
+
+void VolumeController::changeVolume(int v) {
+    if (v<0) volume = v;
+    if (v>100) volume = 100;
+    update();
 }
 
 /**
@@ -63,6 +67,7 @@ void VolumeController::mousePressEvent(QMouseEvent *event) {
     else if (volume > 100)
         volume = 100;
     update();
+    emit volumeChanged(volume);
 }
 
 void VolumeController::mouseMoveEvent(QMouseEvent *event) {

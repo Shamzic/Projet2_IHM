@@ -19,16 +19,16 @@ class VolumeController : public QWidget
 public:
     explicit VolumeController(QWidget *parent = 0);
 
-signals:
-
 public slots:
+    void changeVolume(int v);
+
+signals:
+    void volumeChanged(int v);
 
 protected:
     int volume; //percent ?
     QPixmap audioControl;
     QPixmap audioSlider;
-    QPixmap muteSymbol;
-    QPixmap volumeOnSymbol;
     void paintEvent(QPaintEvent *e);
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
