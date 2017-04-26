@@ -27,13 +27,15 @@ public:
 private:
     QTimer *TpsLecture;
     QStateMachine *Lecteur;
+    QState *stateAttenteAudio;
     QState *statePlay;
     QState *statePause;
     QState *stateReprendre;
     QFinalState *stateFin;
-    bool playing;
+    QSignalTransition * transVolume;
     QString path;
     int length = 0;
+    int volume;
     void setupMessages();
     void cleanup();
 
@@ -42,14 +44,14 @@ signals:
     void signalLecteur(signalType, QVariantMap);
     void signalPlay();
     void signalPause();
-
-private slots:
-    void setPlay();
-    void setPause();
+    void signalFin();
+    void signalNewAudio();
+    void signalVolume();
 
 public slots:
     // Messages du serveur vers l'automate
     void message(signalType, QVariantMap);
+    void changeVolume();
 };
 
 #endif // AUTOMATE_H

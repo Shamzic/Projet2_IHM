@@ -13,6 +13,7 @@
 
 const char kVitesseLecture[]="vitesse";
 const char kParamPath[]="path";
+const char kParamVolume[] = "volume";
 
 const char kJsonSignal[]="signal";
 const char kJsonParams[]="params";
@@ -23,7 +24,8 @@ enum signalType {
     kSignalEndPause,
     kSignalEnd,
     kSignalTerminate,
-    kSignalChangeAudio
+    kSignalChangeAudio,
+    kSignalVolume
 };
 
 // Vitesses de lecture

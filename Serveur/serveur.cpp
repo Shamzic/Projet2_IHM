@@ -123,9 +123,9 @@ void Serveur::sendRequestToMPV(QJsonObject jsonObject){
       mpv->write(bytes.data(), bytes.length());
       mpv->flush();
     }
-
+/*
     QDataStream in(mpv);
-    if (mpv->waitForReadyRead()) {
+    if (mpv->waitForReadyRead(300)) {
         QString str=QString(in.device()->readLine());
         QByteArray an=str.toUtf8();
         QJsonParseError error;
@@ -136,6 +136,7 @@ void Serveur::sendRequestToMPV(QJsonObject jsonObject){
     } else {
         qDebug() << "fuck"  ;
     }
+*/
 }
 
 
@@ -161,6 +162,13 @@ void Serveur::message(signalType sig,QVariantMap varmap) {
             a.append("set_property");
             a.append("pause");
             a.append(false);
+            jsonObject["command"]=a;
+            sendRequestToMPV(jsonObject);
+            break;
+        case kSignalVolume:
+            a.append("set_property");
+            a.append("volume");
+            a.append(varmap[kParamVolume].toInt());
             jsonObject["command"]=a;
             sendRequestToMPV(jsonObject);
             break;
