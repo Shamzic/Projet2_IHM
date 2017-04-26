@@ -37,7 +37,7 @@ signals:
     void signalUI(signalType, QVariantMap);
     void terminatingApp();
     void changeButtonState(bool);
-   // void changeVolumeBar(int);
+    void changeVolumeBar(int);
 
 public slots:
     // Messages reçus du client
@@ -48,6 +48,7 @@ public slots:
 
 private slots:
     void audioDoubleClicked(QTreeWidgetItem *item, int column);
+    void on_muteButton_clicked();
 };
 
 #endif // MAINWINDOW_H

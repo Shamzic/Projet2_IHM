@@ -36,6 +36,7 @@ private:
     QString path;
     int length = 0;
     int volume;
+    int volumeHistory;
     void setupMessages();
     void cleanup();
 

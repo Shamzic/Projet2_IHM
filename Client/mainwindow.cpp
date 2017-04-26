@@ -60,7 +60,7 @@ MainWindow::MainWindow(QWidget *parent) :
                         this,SLOT(audioDoubleClicked(QTreeWidgetItem *,int)));
     connect(this,SIGNAL(changeButtonState(bool)),ui->playbutton,SLOT(playOrPause(bool)));
     connect(ui->volumeBar,SIGNAL(volumeChanged(int)),this,SLOT(volumeBarClicked(int)));
-  //  connect(this,SIGNAL(changeVolumeBar(int)),ui->volumeBar,SLOT(changeVolume(int)));
+    connect(this,SIGNAL(changeVolumeBar(int)),ui->volumeBar,SLOT(changeVolume(int)));
 }
 
 MainWindow::~MainWindow() {
@@ -98,7 +98,15 @@ void MainWindow::volumeBarClicked(int v) {
 }
 
 // message du serveur
-void MainWindow::message(signalType, QVariantMap) {
+void MainWindow::message(signalType sig, QVariantMap params) {
+    switch(sig){
+        case kSignalVolume:
+            qDebug() << "hello it's me";
+            emit changeVolumeBar(params[kParamVolume].toInt());
+            break;
+        default:
+            break;
+    }
 }
 
 void MainWindow::audioDoubleClicked(QTreeWidgetItem *item, int column) {
@@ -113,9 +121,13 @@ void MainWindow::on_muteButton_clicked() {
     QVariantMap varmap;
     if (mute) {
         mute = false;
-        emit signalUI(kSignalMute,varmap);
+        ui->muteButton->setIcon(QIcon(volumeOnSymbol));
+        emit changeVolumeBar(0);
+        emit signalUI(kSignalUnmute,varmap);
     } else {
         mute = true;
+        ui->muteButton->setIcon(QIcon(muteSymbol));
+        emit changeVolumeBar(0);
         emit signalUI(kSignalMute,varmap);
     }
 }

@@ -22,7 +22,7 @@
  */
 VolumeController::VolumeController(QWidget *parent) :
     QWidget(parent),
-    volume(50),
+    volume(100),
     audioControl(":/images/volumecontrol.png"),
     audioSlider(":/images/volumeslider.png")
 {
@@ -32,6 +32,7 @@ VolumeController::VolumeController(QWidget *parent) :
 void VolumeController::changeVolume(int v) {
     if (v<0) volume = v;
     if (v>100) volume = 100;
+    volume = v;
     update();
 }
 

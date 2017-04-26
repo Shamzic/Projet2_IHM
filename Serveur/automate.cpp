@@ -22,7 +22,7 @@
 
 Automate::Automate(QObject *parent) :
     QObject(parent),
-    volume(50)
+    volume(100)
 {
     // Timer durée des
     TpsLecture = new QTimer(this);
@@ -98,6 +98,16 @@ void Automate::message(signalType sig, QVariantMap params) {
         case kSignalVolume:
             volume = params[kParamVolume].toInt();
             emit signalVolume();
+            break;
+        case kSignalMute:
+            volumeHistory = volume;
+            volume = 0;
+            emit signalVolume();
+            break;
+        case kSignalUnmute:
+            volume = volumeHistory;
+            emit signalVolume();
+            break;
         default:
             break;
     }

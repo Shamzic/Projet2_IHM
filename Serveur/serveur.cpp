@@ -117,12 +117,14 @@ void Serveur::MPVEventMessageLoop() {
 */
 
 
-void Serveur::sendRequestToMPV(QJsonObject jsonObject){
+void Serveur::sendRequestToMPV(QJsonObject jsonObject) {
     QByteArray bytes = QJsonDocument(jsonObject).toJson(QJsonDocument::Compact)+"\n";
     if (mpv!=NULL) {
       mpv->write(bytes.data(), bytes.length());
       mpv->flush();
     }
+}
+
 /*
     QDataStream in(mpv);
     if (mpv->waitForReadyRead(300)) {
@@ -137,12 +139,19 @@ void Serveur::sendRequestToMPV(QJsonObject jsonObject){
         qDebug() << "fuck"  ;
     }
 */
-}
 
+void Serveur::sendMessageToClients(QJsonObject jsonObject) {
+    QByteArray bytes = QJsonDocument(jsonObject).toJson(QJsonDocument::Compact)+"\n";
+    if (m_client!=NULL) {
+        m_client->write(bytes.data(), bytes.length());
+        m_client->flush();
+    }
+}
 
 //message de l'automate
 void Serveur::message(signalType sig,QVariantMap varmap) {
     QJsonObject jsonObject ;
+    QJsonObject jsonObjectClient ;
     QJsonArray a ;
     switch (sig) {
         case kSignalPlay:
@@ -171,6 +180,9 @@ void Serveur::message(signalType sig,QVariantMap varmap) {
             a.append(varmap[kParamVolume].toInt());
             jsonObject["command"]=a;
             sendRequestToMPV(jsonObject);
+            jsonObjectClient[kJsonSignal]=sig;
+            jsonObjectClient[kJsonParams]=QJsonObject::fromVariantMap(varmap);
+            sendMessageToClients(jsonObjectClient);
             break;
         case kSignalEnd:
             break;
