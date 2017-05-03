@@ -11,6 +11,7 @@
 #include <QVariantMap>
 #include <QCloseEvent>
 #include <QTreeWidgetItem>
+#include <QApplication>
 
 #include "client.h"
 

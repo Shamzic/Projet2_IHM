@@ -31,18 +31,17 @@ Client::~Client() {
     m_clientLoopThread.waitForFinished();
 }
 
-void Client::traiterMessage() {
-    qDebug() << "message reçu depuis le serveur";
+void Client::terminate() {
+    m_running = false;
 }
-
 
 void Client::serverMessageLoop() {
     while (m_running){
         QDataStream in(m_socket);
-        if (!m_socket->waitForReadyRead()){ // Rien dans la file d'attente
+        if (m_running && !m_socket->waitForReadyRead(200)){ // Rien dans la file d'attente
             QThread::msleep(100); // On attend 1/10s et on continue
             continue;
-        } else {
+        } else if (m_running) {
             QString str=QString(in.device()->readLine());
             if(str=="") continue; // Evitons les lignes vides.
             QByteArray a=str.toUtf8();

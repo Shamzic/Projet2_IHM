@@ -12,6 +12,7 @@
 #include "taglib/tstring.h"
 #include <taglib/tag.h>
 
+
 #include <QDir>
 
 using namespace TagLib;
@@ -69,6 +70,7 @@ MainWindow::~MainWindow() {
 
 void MainWindow::closeEvent(QCloseEvent *) {
     emit terminatingApp();
+    QApplication::quit();
 }
 
 // envoyer message socket
