@@ -166,6 +166,7 @@ void Serveur::message(signalType sig,QVariantMap varmap) {
             jsonObjectClient[kJsonSignal]=sig;
             jsonObjectClient[kJsonParams]=QJsonObject::fromVariantMap(varmap);
             sendMessageToClients(jsonObjectClient);
+            qDebug() << "envoi";
             break;
         case kSignalEnd:
             break;

@@ -37,6 +37,7 @@ signals:
 public slots:
     //msg de l'UI vers le client
     void messageFromUI(signalType, QVariantMap);
+    void readyRead();
 
 };
 

@@ -21,13 +21,18 @@ Client::Client(QObject *parent) :
     }
 
     m_running=true;
-    m_clientLoopThread=QtConcurrent::run(this, &Client::serverMessageLoop);
+    //m_clientLoopThread=QtConcurrent::run(this, &Client::serverMessageLoop);
+    connect(m_socket,SIGNAL(readyRead()),this,SLOT(readyRead()));
 }
 
 Client::~Client() {
     m_socket->disconnectFromServer();
     m_running=false;
     m_clientLoopThread.waitForFinished();
+}
+
+void Client::readyRead() {
+    qDebug() << "msg dans socket";
 }
 
 // réception en boucle des messages du serveur
@@ -44,6 +49,9 @@ void Client::serverMessageLoop() {
         QJsonParseError error;
         QJsonDocument jDoc=QJsonDocument::fromJson(a, &error);
         QJsonObject jsonObject=jDoc.object();
+
+        qDebug() << "message reçu depuis le serveur";
+
         emit signalFromClient((signalType)jsonObject[kJsonSignal].toInt(),
         jsonObject[kJsonParams].toObject().toVariantMap());
    }
@@ -59,12 +67,10 @@ void Client::sendRequestToSocket(signalType sig, QVariantMap params) {
     if (m_socket!=NULL) {
         m_socket->write(bytes.data(), bytes.length());
         m_socket->flush();
-        qDebug() << "message sent to server";
     }
 }
 
 // message reçu de l'interface graphique -> notifier serveur
 void Client::messageFromUI(signalType sig, QVariantMap param) {
-    qDebug() << "received signal from UI";
     sendRequestToSocket(sig,param);
 }
