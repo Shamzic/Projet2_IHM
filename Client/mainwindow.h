@@ -32,6 +32,7 @@ private:
     bool mute;
     QPixmap muteSymbol;
     QPixmap volumeOnSymbol;
+    void ajouterAHistorique(QString path);
 
 signals:
     // Le format de communication vers le client

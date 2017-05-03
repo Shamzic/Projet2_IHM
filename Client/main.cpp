@@ -13,15 +13,14 @@ int main(int argc, char *argv[])
 {
     int r;
     try {
-        Client * c = new Client();
         QApplication a(argc, argv);
         MainWindow w;
         w.show();
-        QObject::connect(&w, SIGNAL(signalUI(signalType, QVariantMap)),
-                            c, SLOT(messageFromUI(signalType, QVariantMap)));
-
+        Client * c = new Client();
         QObject::connect(c, SIGNAL(signalFromClient(signalType, QVariantMap)),
                                     &w, SLOT(message(signalType, QVariantMap)));
+        QObject::connect(&w, SIGNAL(signalUI(signalType, QVariantMap)),
+                            c, SLOT(messageFromUI(signalType, QVariantMap)));
         QObject::connect(&w,SIGNAL(terminatingApp()),c,SLOT(terminate()));
         r = a.exec();
     } catch (QString err) {

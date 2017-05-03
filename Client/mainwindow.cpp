@@ -38,7 +38,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
         filepath.append(QString(audio_files[i]));
         TagLib::FileRef f(filepath.toStdString().c_str());
-        qDebug() << filepath.toStdString().c_str();
         if(!f.isNull() && f.tag()) {
           //  TagLib::Tag *tag = f.tag();
            // qDebug() << tag->artist().toCString();
@@ -102,14 +101,51 @@ void MainWindow::volumeBarClicked(int v) {
     emit signalUI(kSignalVolume,varmap);
 }
 
+/** Ajoute un morceau audio au début de l'historique. Si le morceau y était
+déjà, on enlève l'ancienne entrée dans la liste. */
+void MainWindow::ajouterAHistorique(QString path) {
+    QString description;
+#ifdef Q_OS_MAC
+    QString filepath = "../../../../";
+#else
+    QString filepath = "../";
+#endif
+    filepath.append(path);
+    TagLib::FileRef f(filepath.toStdString().c_str());
+    if(!f.isNull() && f.tag()) {
+        description = f.tag()->artist().toCString();
+        description.append(" - ");
+        description.append(QString(f.tag()->title().toCString()));
+    }
+    qDebug() << description;
+    QList<QListWidgetItem *> previous =
+                    ui->HistoriqueList->findItems(description,Qt::MatchExactly);
+    if (previous.size() != 0) {
+        delete previous.at(0);
+    }
+    ui->HistoriqueList->insertItem(0,description);
+}
+
 // message du serveur
 void MainWindow::message(signalType sig, QVariantMap params) {
-    switch(sig){
+    QString path;
+    switch(sig) {
+        case kSignalPlay:
+            path = params[kParamPath].toString();
+            ajouterAHistorique(path);
+            break;
         case kSignalVolume:
         case kSignalMute:
         case kSignalUnmute:
-            qDebug() << "got volume signal ";
-            qDebug() << "vol : " << params[kParamVolume].toInt() ;
+            emit changeVolumeBar(params[kParamVolume].toInt());
+            break;
+        case kSignalGetProperties:
+            path= params[kParamPath].toString();
+            params[kParamVolume].toInt();
+            if (path!="") {
+                emit changeButtonState(true);
+                qDebug() << path;
+            }
             emit changeVolumeBar(params[kParamVolume].toInt());
             break;
         default:
@@ -129,7 +165,7 @@ void MainWindow::on_muteButton_clicked() {
     if (mute) {
         mute = false;
         ui->muteButton->setIcon(QIcon(volumeOnSymbol));
-        emit changeVolumeBar(0);
+        //emit changeVolumeBar(0);
         emit signalUI(kSignalUnmute,varmap);
     } else {
         mute = true;

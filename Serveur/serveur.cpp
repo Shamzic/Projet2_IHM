@@ -108,7 +108,7 @@ void Serveur::readyRead() {
             QJsonParseError error;
             QJsonDocument jDoc=QJsonDocument::fromJson(a, &error);
             QJsonObject jsonObject=jDoc.object();
-
+            qDebug() << "msg reçu du client" ;
             emit signalFromServer((signalType)jsonObject[kJsonSignal].toInt(),
             jsonObject[kJsonParams].toObject().toVariantMap());
         }
@@ -146,6 +146,9 @@ void Serveur::message(signalType sig,QVariantMap varmap) {
             a.append(varmap[kParamPath].toString());
             jsonObject["command"]=a;
             sendRequestToMPV(jsonObject);
+            jsonObjectClient[kJsonSignal]=sig;
+            jsonObjectClient[kJsonParams]=QJsonObject::fromVariantMap(varmap);
+            sendMessageToClients(jsonObjectClient);
             break;
         case kSignalPause:
             a.append("set_property");
@@ -172,7 +175,6 @@ void Serveur::message(signalType sig,QVariantMap varmap) {
             jsonObjectClient[kJsonSignal]=sig;
             jsonObjectClient[kJsonParams]=QJsonObject::fromVariantMap(varmap);
             sendMessageToClients(jsonObjectClient);
-            qDebug() << "envoi";
             break;
         case kSignalGetProperties:
             jsonObjectClient[kJsonSignal]=kSignalGetProperties;
