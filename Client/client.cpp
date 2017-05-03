@@ -71,6 +71,7 @@ void Client::sendRequestToSocket(signalType sig, QVariantMap params) {
         m_socket->write(bytes.data(), bytes.length());
         m_socket->flush();
     }
+     qDebug() << "msg au serveur";
 }
 
 // message reçu de l'interface graphique -> notifier serveur

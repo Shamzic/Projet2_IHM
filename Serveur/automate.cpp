@@ -46,6 +46,7 @@ Automate::Automate(QObject *parent) :
     QObject::connect(transUnmute, SIGNAL(triggered()),SLOT(changeToUnmute()));
 
     // attenteAudio vers play, si nouveau morceau
+    stateAttenteAudio->addTransition(this,SIGNAL(signalPlay()),statePlay);
     stateAttenteAudio->addTransition(this,SIGNAL(signalNewAudio()),statePlay);
     // si tout est terminé, on arrête la machine
     stateAttenteAudio->addTransition(this,SIGNAL(signalFin()),stateFin);
