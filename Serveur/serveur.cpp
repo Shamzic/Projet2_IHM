@@ -48,7 +48,6 @@ Serveur::~Serveur() {
     }
     m_server->close();
     m_running = false;
-   // m_serverLoopThread.waitForFinished();
 }
 
 
@@ -67,7 +66,29 @@ void Serveur::connectionFromClient() {
     connect(nextClient, SIGNAL(disconnected()), this, SLOT(clientDisconnected()));
     connect(nextClient, SIGNAL(disconnected()), nextClient, SLOT(deleteLater()));
     qDebug() << "connexion client" ;
+    QVariantMap map;
+    emit signalFromServer(kSignalGetProperties, map);
 }
+
+/*
+void Serveur::getProperty(char * which) {
+    QJsonObject jsonObject ;
+    QJsonArray a ;
+    a.append("get_property"); a.append(which);
+    jsonObject["command"]=a;
+    sendRequestToMPV(jsonObject);
+    QDataStream in(mpv);
+    if (mpv->waitForReadyRead(300)) {
+        QString str=QString(in.device()->readLine());
+        QByteArray an=str.toUtf8();
+        QJsonParseError error;
+        QJsonDocument jDoc=QJsonDocument::fromJson(an, &error);
+        QJsonObject jsonObject2=jDoc.object();
+        QVariantMap json_map = jsonObject2.toVariantMap();
+        qDebug() << json_map["data"].toString() ;
+    }
+}
+*/
 
 /** Ce slot est appelé lorsqu'un client se déconnecte. On l'enlève de la liste. */
 void Serveur::clientDisconnected() {
@@ -101,21 +122,6 @@ void Serveur::sendRequestToMPV(QJsonObject jsonObject) {
       mpv->flush();
     }
 }
-
-/* // est-ce qu'on s'intéresse au retour de mpv? nan
-    QDataStream in(mpv);
-    if (mpv->waitForReadyRead(300)) {
-        QString str=QString(in.device()->readLine());
-        QByteArray an=str.toUtf8();
-        QJsonParseError error;
-        QJsonDocument jDoc=QJsonDocument::fromJson(an, &error);
-        QJsonObject jsonObject2=jDoc.object();
-        QVariantMap json_map = jsonObject2.toVariantMap();
-        qDebug() << json_map["error"].toString() ;
-    } else {
-        qDebug() << "fuck"  ;
-    }
-*/
 
 /** Envoyer un message à tous les clients */
 void Serveur::sendMessageToClients(QJsonObject jsonObject) {
@@ -178,6 +184,11 @@ void Serveur::message(signalType sig,QVariantMap varmap) {
             jsonObjectClient[kJsonParams]=QJsonObject::fromVariantMap(varmap);
             sendMessageToClients(jsonObjectClient);
             qDebug() << "envoi time";
+            break;
+        case kSignalGetProperties:
+            jsonObjectClient[kJsonSignal]=kSignalGetProperties;
+            jsonObjectClient[kJsonParams]=QJsonObject::fromVariantMap(varmap);
+            sendMessageToClients(jsonObjectClient);
             break;
         case kSignalEnd:
             break;

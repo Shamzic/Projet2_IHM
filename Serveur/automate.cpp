@@ -39,6 +39,7 @@ Automate::Automate(QObject *parent) :
     QObject::connect(transTime,SIGNAL(triggered()),SLOT(changeTime()));
 
     // attenteAudio vers play, si nouveau morceau
+    stateAttenteAudio->addTransition(this,SIGNAL(signalPlay()),statePlay);
     stateAttenteAudio->addTransition(this,SIGNAL(signalNewAudio()),statePlay);
     // si tout est terminé, on arrête la machine
     stateAttenteAudio->addTransition(this,SIGNAL(signalFin()),stateFin);
@@ -76,6 +77,7 @@ Automate::Automate(QObject *parent) :
 
 // messages reçu depuis le serveur
 void Automate::message(signalType sig, QVariantMap params) {
+    QVariantMap properties;
     switch(sig){
         case kSignalPlay:
             emit signalPlay();
@@ -110,6 +112,10 @@ void Automate::message(signalType sig, QVariantMap params) {
             temps = params[kParamTime].toInt();
             qDebug() << "time changed !" << temps;
             emit signalTime();
+        case kSignalGetProperties:
+            properties[kParamVolume] = QVariant(volume);
+            properties[kParamPath] = QVariant(path);
+            emit signalLecteur(kSignalGetProperties,properties);
             break;
         default:
             break;

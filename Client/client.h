@@ -13,6 +13,7 @@
 #include <QLocalSocket>
 #include <QtConcurrent/QtConcurrent>
 #include <QVariantMap>
+#include <QApplication>
 
 #include <QDebug>
 
@@ -37,7 +38,7 @@ signals:
 public slots:
     //msg de l'UI vers le client
     void messageFromUI(signalType, QVariantMap);
-    void traiterMessage();
+    void terminate();
 
 };
 

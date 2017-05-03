@@ -29,7 +29,8 @@ enum signalType {
     kSignalVolume,
     kSignalMute,
     kSignalUnmute,
-    kSignalTime
+    kSignalTime,
+    kSignalGetProperties
 };
 
 // Vitesses de lecture

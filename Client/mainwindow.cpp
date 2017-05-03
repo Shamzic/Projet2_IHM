@@ -12,6 +12,7 @@
 #include "taglib/tstring.h"
 #include <taglib/tag.h>
 
+
 #include <QDir>
 
 using namespace TagLib;
@@ -73,19 +74,24 @@ MainWindow::~MainWindow() {
 
 void MainWindow::closeEvent(QCloseEvent *) {
     emit terminatingApp();
+    QApplication::quit();
 }
 
 // envoyer message socket
 // varmap ??
 void MainWindow::playbuttonClicked(bool isPlaying) {
     QVariantMap varmap;
-    varmap[kParamPath] = ui->AudioTree->currentItem()->data(0,Qt::UserRole);
-
-    if (isPlaying) {
-        emit signalUI(kSignalPlay,varmap);
-        qDebug()<<"isplaying = true";
+    if (isPlaying && ui->AudioTree->selectedItems().size() == 0){
+        ui->AudioTree->setCurrentItem(ui->AudioTree->currentItem());
+        varmap[kParamPath] = ui->AudioTree->currentItem()->data(0,Qt::UserRole);
+        emit signalUI(kSignalChangeAudio,varmap);
     } else {
-        emit signalUI(kSignalPause,varmap);
+        varmap[kParamPath] = ui->AudioTree->currentItem()->data(0,Qt::UserRole);
+        if (isPlaying) {
+            emit signalUI(kSignalPlay,varmap);
+        } else {
+            emit signalUI(kSignalPause,varmap);
+        }
     }
 }
 

@@ -12,6 +12,7 @@ Client::Client(QObject *parent) :
     m_socket(new QLocalSocket(this))
 {
     qRegisterMetaType<signalType>("signalType");
+    qRegisterMetaType<QAbstractSocket::SocketError>("socketErr");
 
     m_socket->connectToServer(AUTOMATE_SERVER_NAME);
     if (m_socket->waitForConnected()) {
@@ -30,18 +31,17 @@ Client::~Client() {
     m_clientLoopThread.waitForFinished();
 }
 
-void Client::traiterMessage() {
-    qDebug() << "message reçu depuis le serveur";
+void Client::terminate() {
+    m_running = false;
 }
-
 
 void Client::serverMessageLoop() {
     while (m_running){
         QDataStream in(m_socket);
-        if (!m_socket->waitForReadyRead()){ // Rien dans la file d'attente
+        if (m_running && !m_socket->waitForReadyRead(200)){ // Rien dans la file d'attente
             QThread::msleep(100); // On attend 1/10s et on continue
             continue;
-        } else {
+        } else if (m_running) {
             QString str=QString(in.device()->readLine());
             if(str=="") continue; // Evitons les lignes vides.
             QByteArray a=str.toUtf8();
@@ -70,6 +70,7 @@ void Client::sendRequestToSocket(signalType sig, QVariantMap params) {
         m_socket->write(bytes.data(), bytes.length());
         m_socket->flush();
     }
+     qDebug() << "msg au serveur";
 }
 
 // message reçu de l'interface graphique -> notifier serveur

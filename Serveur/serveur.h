@@ -9,6 +9,7 @@
 #define SERVEUR_H
 
 #include <QObject>
+#include <QThread>
 #include <QLocalServer>
 #include <QLocalSocket>
 #include <QtConcurrent/QtConcurrent>
@@ -22,8 +23,6 @@ public:
     explicit Serveur(QObject *parent = 0);
     ~Serveur();
     bool m_running;
-    QFuture<void> m_serverLoopThread;
-    QFuture<void> m_mpvEventLoopThread;
     void clientMessageLoop();
 
 private:

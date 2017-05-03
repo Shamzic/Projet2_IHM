@@ -17,13 +17,12 @@ int main(int argc, char *argv[])
         QApplication a(argc, argv);
         MainWindow w;
         w.show();
-
         QObject::connect(&w, SIGNAL(signalUI(signalType, QVariantMap)),
                             c, SLOT(messageFromUI(signalType, QVariantMap)));
 
         QObject::connect(c, SIGNAL(signalFromClient(signalType, QVariantMap)),
                                     &w, SLOT(message(signalType, QVariantMap)));
-        QObject::connect(&w,SIGNAL(terminatingApp()),c,SLOT(deleteLater()));
+        QObject::connect(&w,SIGNAL(terminatingApp()),c,SLOT(terminate()));
         r = a.exec();
     } catch (QString err) {
         std::cout << err.toStdString() << "\n";

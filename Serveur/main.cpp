@@ -8,16 +8,15 @@
 #include "serveur.h"
 #include <iostream>
 #include "automate.h"
-#include <QApplication>
+#include <QCoreApplication>
 
 int main(int argc, char *argv[])
 {
     int r;
-    QApplication a(argc, argv);
+    QCoreApplication a(argc, argv);
     try {
         Serveur s;
         Automate m;
-
         // On connect le serveur à l'Automate
         QObject::connect(&m, SIGNAL(signalLecteur(signalType, QVariantMap)),
                             &s, SLOT(message(signalType, QVariantMap)));
