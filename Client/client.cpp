@@ -12,7 +12,8 @@ Client::Client(QObject *parent) :
     m_socket(new QLocalSocket(this))
 {
     qRegisterMetaType<signalType>("signalType");
-    m_socket->connectToServer(AUTOMATE_SERVER_NAME,QIODevice::ReadWrite);
+
+    m_socket->connectToServer(AUTOMATE_SERVER_NAME);
     if (m_socket->waitForConnected()) {
          qDebug() << "connected to server";
     } else {
@@ -21,17 +22,12 @@ Client::Client(QObject *parent) :
 
     m_running=true;
     m_clientLoopThread=QtConcurrent::run(this, &Client::serverMessageLoop);
-    connect(m_socket, SIGNAL(readyRead()), this, SLOT(readyRead()));
 }
 
 Client::~Client() {
     m_socket->disconnectFromServer();
     m_running=false;
     m_clientLoopThread.waitForFinished();
-}
-
-void Client::readyRead() {
-    qDebug() << "msg dans la socket..";
 }
 
 // réception en boucle des messages du serveur
@@ -53,7 +49,6 @@ void Client::serverMessageLoop() {
    }
 }
 
-
 // envoyer un message au serveur
 void Client::sendRequestToSocket(signalType sig, QVariantMap params) {
     QJsonObject jsonObject ;
@@ -64,10 +59,12 @@ void Client::sendRequestToSocket(signalType sig, QVariantMap params) {
     if (m_socket!=NULL) {
         m_socket->write(bytes.data(), bytes.length());
         m_socket->flush();
+        qDebug() << "message sent to server";
     }
 }
 
 // message reçu de l'interface graphique -> notifier serveur
 void Client::messageFromUI(signalType sig, QVariantMap param) {
+    qDebug() << "received signal from UI";
     sendRequestToSocket(sig,param);
 }

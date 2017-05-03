@@ -102,6 +102,7 @@ void MainWindow::message(signalType sig, QVariantMap params) {
         case kSignalMute:
         case kSignalUnmute:
             qDebug() << "got volume signal ";
+            qDebug() << "vol : " << params[kParamVolume].toInt() ;
             emit changeVolumeBar(params[kParamVolume].toInt());
             break;
         default:
@@ -110,7 +111,6 @@ void MainWindow::message(signalType sig, QVariantMap params) {
 }
 
 void MainWindow::audioDoubleClicked(QTreeWidgetItem *item, int column) {
-qDebug() << "double click on audio";
     QVariantMap varmap;
     varmap[kParamPath] = item->data(column,Qt::UserRole);
     emit changeButtonState(true);
