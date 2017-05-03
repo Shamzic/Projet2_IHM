@@ -21,8 +21,7 @@ Client::Client(QObject *parent) :
     }
 
     m_running=true;
-    //m_clientLoopThread=QtConcurrent::run(this, &Client::serverMessageLoop);
-    connect(m_socket,SIGNAL(readyRead()),this,SLOT(readyRead()));
+    m_clientLoopThread=QtConcurrent::run(this, &Client::serverMessageLoop);
 }
 
 Client::~Client() {
@@ -31,31 +30,34 @@ Client::~Client() {
     m_clientLoopThread.waitForFinished();
 }
 
-void Client::readyRead() {
-    qDebug() << "msg dans socket";
+void Client::traiterMessage() {
+    qDebug() << "message reçu depuis le serveur";
 }
 
-// réception en boucle des messages du serveur
+
 void Client::serverMessageLoop() {
     while (m_running){
         QDataStream in(m_socket);
-        if (in.atEnd()){ // Rien dans la file d'attente
+        if (!m_socket->waitForReadyRead()){ // Rien dans la file d'attente
             QThread::msleep(100); // On attend 1/10s et on continue
             continue;
+        } else {
+            QString str=QString(in.device()->readLine());
+            if(str=="") continue; // Evitons les lignes vides.
+            QByteArray a=str.toUtf8();
+            QJsonParseError error;
+            QJsonDocument jDoc=QJsonDocument::fromJson(a, &error);
+            QJsonObject jsonObject=jDoc.object();
+
+            qDebug() << "message reçu depuis le serveur";
+
+            emit signalFromClient((signalType)jsonObject[kJsonSignal].toInt(),
+            jsonObject[kJsonParams].toObject().toVariantMap());
         }
-        QString str=QString(in.device()->readLine());
-        if(str=="") continue; // Evitons les lignes vides.
-        QByteArray a=str.toUtf8();
-        QJsonParseError error;
-        QJsonDocument jDoc=QJsonDocument::fromJson(a, &error);
-        QJsonObject jsonObject=jDoc.object();
-
-        qDebug() << "message reçu depuis le serveur";
-
-        emit signalFromClient((signalType)jsonObject[kJsonSignal].toInt(),
-        jsonObject[kJsonParams].toObject().toVariantMap());
    }
 }
+
+
 
 // envoyer un message au serveur
 void Client::sendRequestToSocket(signalType sig, QVariantMap params) {
