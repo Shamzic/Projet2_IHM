@@ -37,9 +37,10 @@ private:
     QSignalTransition * transUnmute;
     QString path;
     int length = 0;
-    int volume;
-    int volumeHistory;
+    int volume = 100;
+    int volumeHistory = 100;
     bool mute = false;
+    int duration = 0;
     void setupMessages();
     void cleanup();
     void addVolumeTransitions(QState * s);

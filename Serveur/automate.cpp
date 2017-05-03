@@ -21,8 +21,7 @@
  #include <QDebug>
 
 Automate::Automate(QObject *parent) :
-    QObject(parent),
-    volume(100)
+    QObject(parent)
 {
     // Timer durée des
     TpsLecture = new QTimer(this);
@@ -84,6 +83,7 @@ Automate::Automate(QObject *parent) :
 
 // messages reçu depuis le serveur
 void Automate::message(signalType sig, QVariantMap params) {
+    QVariantMap properties;
     switch(sig){
         case kSignalPlay:
             emit signalPlay();
@@ -113,6 +113,11 @@ void Automate::message(signalType sig, QVariantMap params) {
             volume = volumeHistory;
             mute = false;
             emit signalUnmute();
+            break;
+        case kSignalGetProperties:
+            properties[kParamVolume] = QVariant(volume);
+            properties[kParamPath] = QVariant(path);
+            emit signalLecteur(kSignalGetProperties,properties);
             break;
         default:
             break;

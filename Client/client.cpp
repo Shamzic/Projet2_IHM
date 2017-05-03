@@ -12,6 +12,7 @@ Client::Client(QObject *parent) :
     m_socket(new QLocalSocket(this))
 {
     qRegisterMetaType<signalType>("signalType");
+    qRegisterMetaType<QAbstractSocket::SocketError>("socketErr");
 
     m_socket->connectToServer(AUTOMATE_SERVER_NAME);
     if (m_socket->waitForConnected()) {
