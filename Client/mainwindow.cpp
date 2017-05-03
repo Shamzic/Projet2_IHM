@@ -48,6 +48,7 @@ MainWindow::MainWindow(QWidget *parent) :
             //audio->setText(0, tr(audio_files[i]));
             audio->setText(0,description);
             audio->setData(0,Qt::UserRole,QVariant(audio_files[i]));
+            ui->AudioTree->setCurrentItem(audio->treeWidget()->topLevelItem(0));
         }
     }
 
@@ -60,7 +61,10 @@ MainWindow::MainWindow(QWidget *parent) :
                         this,SLOT(audioDoubleClicked(QTreeWidgetItem *,int)));
     connect(this,SIGNAL(changeButtonState(bool)),ui->playbutton,SLOT(playOrPause(bool)));
     connect(ui->volumeBar,SIGNAL(volumeChanged(int)),this,SLOT(volumeBarClicked(int)));
-    connect(this,SIGNAL(changeVolumeBar(int)),ui->volumeBar,SLOT(changeVolume(int)));
+    connect(this,SIGNAL(changeVolumeBar(int)),ui->volumeBar,SLOT(changeVolume(int)));   
+
+    connect(ui->audioProgress,SIGNAL(timeChanged(int)),this,SLOT(audioProgressClicked(int)));
+      connect(this,SIGNAL(changeTimeBar(int)),ui->audioProgress,SLOT(changeAudio(int)));
 }
 
 MainWindow::~MainWindow() {
@@ -126,6 +130,12 @@ void MainWindow::ajouterAHistorique(QString path) {
     ui->HistoriqueList->insertItem(0,description);
 }
 
+void MainWindow::audioProgressClicked(int t) {
+    QVariantMap varmap;
+    varmap[kParamTime] = t;
+    emit signalUI(kSignalTime,varmap);
+}
+
 // message du serveur
 void MainWindow::message(signalType sig, QVariantMap params) {
     QString path;
@@ -148,6 +158,10 @@ void MainWindow::message(signalType sig, QVariantMap params) {
             }
             emit changeVolumeBar(params[kParamVolume].toInt());
             break;
+        case kSignalTime:
+            qDebug() << "got time signal ";
+            qDebug() << "time : " << params[kParamTime].toInt() ;
+            emit changeTimeBar(params[kParamTime].toInt());
         default:
             break;
     }
@@ -156,6 +170,7 @@ void MainWindow::message(signalType sig, QVariantMap params) {
 void MainWindow::audioDoubleClicked(QTreeWidgetItem *item, int column) {
     QVariantMap varmap;
     varmap[kParamPath] = item->data(column,Qt::UserRole);
+    qDebug() << "column"<<column;
     emit changeButtonState(true);
     emit signalUI(kSignalChangeAudio,varmap);
 }

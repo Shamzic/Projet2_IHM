@@ -22,6 +22,7 @@ public:
     explicit AudioProgressBar(QWidget *parent = 0);
 
 signals:
+    void timeChanged(int time);
 
 public slots:
     void changeAudio(int length);

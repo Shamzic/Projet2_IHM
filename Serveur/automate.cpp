@@ -6,22 +6,12 @@
  ***************************************************************************/
 
 #include "automate.h"
-
-
-/* Bon j'ai fais un peu yolo copié sur la machine...
- *
- * Mais en gros j'aimerais que on appuie sur play, ça lance la machine à état
- * et ça joue la liste en cours.
- * Si on fait pause et l'état du temps doit être sauvegardé.
- * Dès qu'une musique est finie, la suivante dans la liste est lancée.
- * Quand la liste est finie, la machine a état est terminée.
- *
- * */
-
- #include <QDebug>
+#include <QDebug>
 
 Automate::Automate(QObject *parent) :
-    QObject(parent)
+    QObject(parent),
+    volume(100),
+    temps(0)
 {
     // Timer durée des
     TpsLecture = new QTimer(this);
@@ -44,6 +34,9 @@ Automate::Automate(QObject *parent) :
     QObject::connect(transMute, SIGNAL(triggered()),SLOT(changeToMute()));
     transUnmute = new QSignalTransition(this,SIGNAL(signalUnmute()));
     QObject::connect(transUnmute, SIGNAL(triggered()),SLOT(changeToUnmute()));
+
+    transTime = new QSignalTransition(this,SIGNAL(signalTime()));
+    QObject::connect(transTime,SIGNAL(triggered()),SLOT(changeTime()));
 
     // attenteAudio vers play, si nouveau morceau
     stateAttenteAudio->addTransition(this,SIGNAL(signalPlay()),statePlay);
@@ -115,6 +108,10 @@ void Automate::message(signalType sig, QVariantMap params) {
             mute = false;
             emit signalUnmute();
             break;
+    case kSignalTime:
+            temps = params[kParamTime].toInt();
+            qDebug() << "time changed !" << temps;
+            emit signalTime();
         case kSignalGetProperties:
             properties[kParamVolume] = QVariant(volume);
             properties[kParamPath] = QVariant(path);
@@ -129,12 +126,14 @@ void Automate::addVolumeTransitions(QState * s) {
     s->addTransition(transVolume);
     s->addTransition(transMute);
     s->addTransition(transUnmute);
+    s->addTransition(transTime);
 }
 
 void Automate::removeVolumeTransitions(QState * s) {
     s->removeTransition(transVolume);
     s->removeTransition(transMute);
     s->removeTransition(transUnmute);
+    s->removeTransition(transTime);
 }
 
 /* Messages vers le serveur */
@@ -212,4 +211,11 @@ void Automate::changeToUnmute() {
     QVariantMap params;
     params[kParamVolume] = QVariant(volumeHistory);
     emit signalLecteur(kSignalUnmute, params);
+}
+
+void Automate::changeTime() {
+    qDebug() << "changement temps";
+    QVariantMap params;
+    params[kParamTime] = QVariant(temps);
+    emit signalLecteur(kSignalTime, params);
 }

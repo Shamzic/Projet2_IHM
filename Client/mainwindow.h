@@ -40,12 +40,14 @@ signals:
     void terminatingApp();
     void changeButtonState(bool);
     void changeVolumeBar(int);
+    void changeTimeBar(int);
 
 public slots:
     // Messages reçus du client
     void message(signalType, QVariantMap);
     void playbuttonClicked(bool);
     void volumeBarClicked(int);
+    void audioProgressClicked(int t);
     void closeEvent(QCloseEvent *event);
 
 private slots:

@@ -176,10 +176,22 @@ void Serveur::message(signalType sig,QVariantMap varmap) {
             jsonObjectClient[kJsonParams]=QJsonObject::fromVariantMap(varmap);
             sendMessageToClients(jsonObjectClient);
             break;
+        case kSignalTime:
+            a.append("set_property");
+            a.append("time-pos");
+            a.append(varmap[kParamTime].toInt());
+            jsonObject["command"]=a;
+            sendRequestToMPV(jsonObject);
+            jsonObjectClient[kJsonSignal]=sig;
+            jsonObjectClient[kJsonParams]=QJsonObject::fromVariantMap(varmap);
+            sendMessageToClients(jsonObjectClient);
+            qDebug() << "envoi time";
+            break;
         case kSignalGetProperties:
             jsonObjectClient[kJsonSignal]=kSignalGetProperties;
             jsonObjectClient[kJsonParams]=QJsonObject::fromVariantMap(varmap);
             sendMessageToClients(jsonObjectClient);
+            break;
         case kSignalEnd:
             break;
         default:
