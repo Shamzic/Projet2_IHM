@@ -35,10 +35,12 @@ private:
     QSignalTransition * transVolume;
     QSignalTransition * transMute;
     QSignalTransition * transUnmute;
+    QSignalTransition * transTime;
     QString path;
     int length = 0;
     int volume;
     int volumeHistory;
+    int temps;
     bool mute = false;
     void setupMessages();
     void cleanup();
@@ -55,6 +57,7 @@ signals:
     void signalVolume();
     void signalMute();
     void signalUnmute();
+    void signalTime();
 
 public slots:
     // Messages du serveur vers l'automate
@@ -62,6 +65,7 @@ public slots:
     void changeVolume();
     void changeToMute();
     void changeToUnmute();
+    void changeTime();
 };
 
 #endif // AUTOMATE_H

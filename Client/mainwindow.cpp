@@ -48,6 +48,7 @@ MainWindow::MainWindow(QWidget *parent) :
             //audio->setText(0, tr(audio_files[i]));
             audio->setText(0,description);
             audio->setData(0,Qt::UserRole,QVariant(audio_files[i]));
+            ui->AudioTree->setCurrentItem(audio->treeWidget()->topLevelItem(0));
         }
     }
 
@@ -60,7 +61,10 @@ MainWindow::MainWindow(QWidget *parent) :
                         this,SLOT(audioDoubleClicked(QTreeWidgetItem *,int)));
     connect(this,SIGNAL(changeButtonState(bool)),ui->playbutton,SLOT(playOrPause(bool)));
     connect(ui->volumeBar,SIGNAL(volumeChanged(int)),this,SLOT(volumeBarClicked(int)));
-    connect(this,SIGNAL(changeVolumeBar(int)),ui->volumeBar,SLOT(changeVolume(int)));
+    connect(this,SIGNAL(changeVolumeBar(int)),ui->volumeBar,SLOT(changeVolume(int)));   
+
+    connect(ui->audioProgress,SIGNAL(timeChanged(int)),this,SLOT(audioProgressClicked(int)));
+      connect(this,SIGNAL(changeTimeBar(int)),ui->audioProgress,SLOT(changeAudio(int)));
 }
 
 MainWindow::~MainWindow() {
@@ -79,6 +83,7 @@ void MainWindow::playbuttonClicked(bool isPlaying) {
 
     if (isPlaying) {
         emit signalUI(kSignalPlay,varmap);
+        qDebug()<<"isplaying = true";
     } else {
         emit signalUI(kSignalPause,varmap);
     }
@@ -95,6 +100,12 @@ void MainWindow::volumeBarClicked(int v) {
     emit signalUI(kSignalVolume,varmap);
 }
 
+void MainWindow::audioProgressClicked(int t) {
+    QVariantMap varmap;
+    varmap[kParamTime] = t;
+    emit signalUI(kSignalTime,varmap);
+}
+
 // message du serveur
 void MainWindow::message(signalType sig, QVariantMap params) {
     switch(sig){
@@ -105,6 +116,10 @@ void MainWindow::message(signalType sig, QVariantMap params) {
             qDebug() << "vol : " << params[kParamVolume].toInt() ;
             emit changeVolumeBar(params[kParamVolume].toInt());
             break;
+        case kSignalTime:
+            qDebug() << "got time signal ";
+            qDebug() << "time : " << params[kParamTime].toInt() ;
+            emit changeTimeBar(params[kParamTime].toInt());
         default:
             break;
     }
@@ -113,6 +128,7 @@ void MainWindow::message(signalType sig, QVariantMap params) {
 void MainWindow::audioDoubleClicked(QTreeWidgetItem *item, int column) {
     QVariantMap varmap;
     varmap[kParamPath] = item->data(column,Qt::UserRole);
+    qDebug() << "column"<<column;
     emit changeButtonState(true);
     emit signalUI(kSignalChangeAudio,varmap);
 }

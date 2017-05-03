@@ -6,7 +6,7 @@
  ***************************************************************************/
 
 #include "audioprogressbar.h"
-
+#include <QDebug>
 
 /**
  * Constructeur AudioProgressBar.
@@ -38,7 +38,12 @@ AudioProgressBar::AudioProgressBar(QWidget *parent) :
  */
 void AudioProgressBar::changeAudio(int length) {
     timePassed = 0;
-    audioLength = length;
+    if(length<0)
+        timePassed=0;
+    if(length>audioLength)
+        timePassed=audioLength;
+    timePassed=length;
+    update();
 }
 
 /**
@@ -70,7 +75,15 @@ void AudioProgressBar::paintEvent(QPaintEvent *){
  *            Evenement de souris.
  */
 void AudioProgressBar::mouseMoveEvent(QMouseEvent *event) {
-    mousePressEvent(event);
+    float pourc = (float)(event->x())/(float)pictureEmptyProgressBar.width();
+    timePassed = floor(pourc*audioLength);
+    if (timePassed < 0 )
+        timePassed = 0;
+    else if (timePassed > audioLength)
+        timePassed = audioLength;
+    update();
+
+    emit timeChanged(timePassed);
 }
 
 /**
@@ -86,7 +99,7 @@ void AudioProgressBar::mouseMoveEvent(QMouseEvent *event) {
  */
 void AudioProgressBar::mousePressEvent(QMouseEvent *event) {
     float pourc = (float)(event->x())/(float)pictureEmptyProgressBar.width();
-    timePassed = floor(pourc*audioLength); // What is this ???
+    timePassed = floor(pourc*audioLength);
     if (timePassed < 0 )
         timePassed = 0;
     else if (timePassed > audioLength)

@@ -14,6 +14,7 @@
 const char kVitesseLecture[]="vitesse";
 const char kParamPath[]="path";
 const char kParamVolume[] = "volume";
+const char kParamTime[] = "time";
 
 const char kJsonSignal[]="signal";
 const char kJsonParams[]="params";
@@ -27,7 +28,8 @@ enum signalType {
     kSignalChangeAudio,
     kSignalVolume,
     kSignalMute,
-    kSignalUnmute
+    kSignalUnmute,
+    kSignalTime
 };
 
 // Vitesses de lecture
@@ -39,6 +41,7 @@ enum speed {
 const char * const audio_files[]= {
     "Audio/Miley_Cyrus-Jolene.mp3",
     "Audio/Moana - I Am Moana.mp3",
+    "Audio/EDEN - rock and roll.mp3",
     "Audio/Ludovico Einaudi - Fly.mp3",
     "Audio/Sing - I'm Still Standing.mp3",
     nullptr
