@@ -33,12 +33,17 @@ private:
     QState *stateReprendre;
     QFinalState *stateFin;
     QSignalTransition * transVolume;
+    QSignalTransition * transMute;
+    QSignalTransition * transUnmute;
     QString path;
     int length = 0;
     int volume;
     int volumeHistory;
+    bool mute = false;
     void setupMessages();
     void cleanup();
+    void addVolumeTransitions(QState * s);
+    void removeVolumeTransitions(QState * s);
 
 signals:
     // Messages de l'automate vers le serveur
@@ -48,11 +53,15 @@ signals:
     void signalFin();
     void signalNewAudio();
     void signalVolume();
+    void signalMute();
+    void signalUnmute();
 
 public slots:
     // Messages du serveur vers l'automate
     void message(signalType, QVariantMap);
     void changeVolume();
+    void changeToMute();
+    void changeToUnmute();
 };
 
 #endif // AUTOMATE_H

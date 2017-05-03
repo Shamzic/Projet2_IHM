@@ -16,6 +16,7 @@ Serveur::Serveur(QObject *parent) :
 {
     qRegisterMetaType<signalType>("signalType");
 
+    /* on se connecte à mpv */
     mpv->connectToServer(MPV_SERVER_NAME,QIODevice::ReadWrite);
     if (mpv->waitForConnected())
         qDebug() << "connected to mpv";
@@ -23,99 +24,75 @@ Serveur::Serveur(QObject *parent) :
         throw mpv->errorString();
     }
 
-    // lancer le serveur pour parler avec les clients
+    /* on lance le serveur pour parler avec les clients */
     QString serverName(AUTOMATE_SERVER_NAME);
     QLocalServer::removeServer(serverName);
     if (!m_server->listen(serverName)) {
         throw m_server->errorString();
     }
 
+    /* on a un signal si un client se connecte */
     connect(m_server, SIGNAL(newConnection()), this, SLOT(connectionFromClient()));
+    /* on termine si MPV se casse */
     connect(mpv, SIGNAL(disconnected()), this, SLOT(endServer()));
 
     m_running=true;
-    m_serverLoopThread = QtConcurrent::run(this,&Serveur::clientMessageLoop);
-   // m_mpvEventLoopThread = QtConcurrent::run(this,&Serveur::MPVEventMessageLoop);
 }
 
 Serveur::~Serveur() {
     qDebug() << "del server" ;
     mpv->disconnectFromServer();
-    if(m_client)m_client->abort();
+    int i= 0;
+    for (i=0; i < m_clients.size() ;i++) {
+        m_clients.at(i)->abort();
+    }
     m_server->close();
     m_running = false;
-    m_serverLoopThread.waitForFinished();
-    //m_mpvEventLoopThread.waitForFinished();
+   // m_serverLoopThread.waitForFinished();
 }
 
 
-//mpv n'est plus accessible
+/** Terminer si mpv n'est plus accessible */
 void Serveur::endServer() {
     emit terminateSig();
 }
 
-// slot appelé lorsqu'un client se connecte
+/** slot appelé lorsqu'un client se connecte. On le met dans la liste de clients.
+ * On prépare les signaux lorsque le client se déconnecte, et lorsqu'il nous a
+ * écrit un message dans la socket */
 void Serveur::connectionFromClient() {
-    if (m_client) return; // Un seul client pour l'instant...
-    m_client= m_server->nextPendingConnection();
-    connect(m_client, SIGNAL(disconnected()), m_client, SLOT(deleteLater()));
-    connect(m_client, SIGNAL(disconnected()), this, SLOT(clientDisconnected()));
+    QLocalSocket * nextClient = m_server->nextPendingConnection();
+    m_clients.append(nextClient);
+    connect(nextClient, SIGNAL(readyRead()), this, SLOT(readyRead()));
+    connect(nextClient, SIGNAL(disconnected()), this, SLOT(clientDisconnected()));
+    connect(nextClient, SIGNAL(disconnected()), nextClient, SLOT(deleteLater()));
     qDebug() << "connexion client" ;
 }
 
-// slot appelé lorsqu'un client se déconnecte
+/** Ce slot est appelé lorsqu'un client se déconnecte. On l'enlève de la liste. */
 void Serveur::clientDisconnected() {
+    QLocalSocket* obj = qobject_cast<QLocalSocket *>(sender());
+    m_clients.removeOne(obj);
     qDebug() << "déconnexion client" ;
-    m_client=NULL;
 }
 
+/** Slot appelé quand un client a écrit un message */
+void Serveur::readyRead() {
+    QLocalSocket* client = qobject_cast<QLocalSocket *>(sender());
+    if (m_running) {
+        QDataStream in(client);
+        if ( !in.atEnd() ) {
+            QString str=QString(in.device()->readLine());
+            QByteArray a=str.toUtf8();
+            QJsonParseError error;
+            QJsonDocument jDoc=QJsonDocument::fromJson(a, &error);
+            QJsonObject jsonObject=jDoc.object();
 
-// lire les messages des clients
-// on reçoit un truc du genre { "signal" = numero_signal ,
-//    "params" = [<un variant map avec des parametres>] }
-//jsonObject["signal"]=sig;
-//jsonObject[kJsonParams]=QJsonObject::fromVariantMap(params);
-void Serveur::clientMessageLoop() {
-    while (m_running) {
-        QDataStream in(m_client);
-        if ( in.atEnd() ) { // Rien dans la file d'attente
-            QThread::msleep(100); // On attend 1/10s et on continue
-            continue;
+            emit signalFromServer((signalType)jsonObject[kJsonSignal].toInt(),
+            jsonObject[kJsonParams].toObject().toVariantMap());
         }
-        QString str=QString(in.device()->readLine());
-        QByteArray a=str.toUtf8();
-        QJsonParseError error;
-        QJsonDocument jDoc=QJsonDocument::fromJson(a, &error);
-        QJsonObject jsonObject=jDoc.object();
-
-        qDebug() << "msg reçu";
-
-        emit signalFromServer((signalType)jsonObject[kJsonSignal].toInt(),
-        jsonObject[kJsonParams].toObject().toVariantMap());
     }
 }
-
-/*
-void Serveur::MPVEventMessageLoop() {
-    while (m_running) {
-        QDataStream in(mpv);
-        if ( in.atEnd() ) { // Rien dans la file d'attente
-            QThread::msleep(100); // On attend 1/10s et on continue
-            continue;
-        }
-        QString str=QString(in.device()->readLine());
-        QByteArray a=str.toUtf8();
-        QJsonParseError error;
-        QJsonDocument jDoc=QJsonDocument::fromJson(a, &error);
-        QJsonObject jsonObject=jDoc.object();
-
-        qDebug() << "event message MPV reçu :";
-        QVariantMap json_map = jsonObject.toVariantMap();
-        qDebug() << json_map["event"].toString() ;
-    }
-}
-*/
-
 
 void Serveur::sendRequestToMPV(QJsonObject jsonObject) {
     QByteArray bytes = QJsonDocument(jsonObject).toJson(QJsonDocument::Compact)+"\n";
@@ -125,7 +102,7 @@ void Serveur::sendRequestToMPV(QJsonObject jsonObject) {
     }
 }
 
-/*
+/* // est-ce qu'on s'intéresse au retour de mpv? nan
     QDataStream in(mpv);
     if (mpv->waitForReadyRead(300)) {
         QString str=QString(in.device()->readLine());
@@ -140,15 +117,19 @@ void Serveur::sendRequestToMPV(QJsonObject jsonObject) {
     }
 */
 
+/** Envoyer un message à tous les clients */
 void Serveur::sendMessageToClients(QJsonObject jsonObject) {
     QByteArray bytes = QJsonDocument(jsonObject).toJson(QJsonDocument::Compact)+"\n";
-    if (m_client!=NULL) {
-        m_client->write(bytes.data(), bytes.length());
-        m_client->flush();
+    int i=0;
+     for (i=0; i < m_clients.size() ; i++) {
+        m_clients.at(i)->write(bytes.data(), bytes.length());
+        m_clients.at(i)->flush();
     }
+    qDebug() << "msg envoyé à client" ;
 }
 
-//message de l'automate
+/** Traiter un message de l'automate, càd préparer un message vers MPV et
+    les clients */
 void Serveur::message(signalType sig,QVariantMap varmap) {
     QJsonObject jsonObject ;
     QJsonObject jsonObjectClient ;
@@ -175,6 +156,8 @@ void Serveur::message(signalType sig,QVariantMap varmap) {
             sendRequestToMPV(jsonObject);
             break;
         case kSignalVolume:
+        case kSignalMute:
+        case kSignalUnmute:
             a.append("set_property");
             a.append("volume");
             a.append(varmap[kParamVolume].toInt());

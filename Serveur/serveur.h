@@ -23,13 +23,12 @@ public:
     ~Serveur();
     bool m_running;
     QFuture<void> m_serverLoopThread;
-    //QFuture<void> m_mpvEventLoopThread;
+    QFuture<void> m_mpvEventLoopThread;
     void clientMessageLoop();
-    //void MPVEventMessageLoop();
 
 private:
     QLocalServer *m_server;
-    QLocalSocket * m_client=NULL;
+    QVector<QLocalSocket *> m_clients;
     QLocalSocket *mpv=NULL;
     void sendRequestToMPV(QJsonObject jsonObject);
     void sendMessageToClients(QJsonObject jsonObject);
@@ -38,6 +37,7 @@ private slots:
     void connectionFromClient();
     void clientDisconnected();
     void endServer();
+    void readyRead();
 
 public slots:
     // Messages reçus de l'automate

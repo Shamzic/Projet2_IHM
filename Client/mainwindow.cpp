@@ -86,11 +86,9 @@ void MainWindow::playbuttonClicked(bool isPlaying) {
 
 void MainWindow::volumeBarClicked(int v) {
     if (v==0) {
-        ui->muteButton->setIcon(QIcon(muteSymbol));
-        mute = true;
+        on_muteButton_clicked();
     } else if (mute && v > 0 ){
-        ui->muteButton->setIcon(QIcon(volumeOnSymbol));
-        mute = false;
+        on_muteButton_clicked();
     }
     QVariantMap varmap;
     varmap[kParamVolume] = v;
@@ -101,7 +99,9 @@ void MainWindow::volumeBarClicked(int v) {
 void MainWindow::message(signalType sig, QVariantMap params) {
     switch(sig){
         case kSignalVolume:
-            qDebug() << "hello it's me";
+        case kSignalMute:
+        case kSignalUnmute:
+            qDebug() << "got volume signal ";
             emit changeVolumeBar(params[kParamVolume].toInt());
             break;
         default:

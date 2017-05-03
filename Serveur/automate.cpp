@@ -41,6 +41,10 @@ Automate::Automate(QObject *parent) :
 
     transVolume = new QSignalTransition(this,SIGNAL(signalVolume()));
     QObject::connect(transVolume, SIGNAL(triggered()),SLOT(changeVolume()));
+    transMute = new QSignalTransition(this,SIGNAL(signalMute()));
+    QObject::connect(transMute, SIGNAL(triggered()),SLOT(changeToMute()));
+    transUnmute = new QSignalTransition(this,SIGNAL(signalUnmute()));
+    QObject::connect(transUnmute, SIGNAL(triggered()),SLOT(changeToUnmute()));
 
     // attenteAudio vers play, si nouveau morceau
     stateAttenteAudio->addTransition(this,SIGNAL(signalNewAudio()),statePlay);
@@ -102,31 +106,45 @@ void Automate::message(signalType sig, QVariantMap params) {
         case kSignalMute:
             volumeHistory = volume;
             volume = 0;
-            emit signalVolume();
+            mute = true;
+            emit signalMute();
             break;
         case kSignalUnmute:
             volume = volumeHistory;
-            emit signalVolume();
+            mute = false;
+            emit signalUnmute();
             break;
         default:
             break;
     }
 }
 
+void Automate::addVolumeTransitions(QState * s) {
+    s->addTransition(transVolume);
+    s->addTransition(transMute);
+    s->addTransition(transUnmute);
+}
+
+void Automate::removeVolumeTransitions(QState * s) {
+    s->removeTransition(transVolume);
+    s->removeTransition(transMute);
+    s->removeTransition(transUnmute);
+}
+
 /* Messages vers le serveur */
 void Automate::setupMessages() {
     QObject::connect(stateAttenteAudio, &QState::entered, [this](){
-        stateAttenteAudio->addTransition(transVolume);
+        addVolumeTransitions(stateAttenteAudio);
         qDebug()<<"entree attente audio";
     });
 
     QObject::connect(stateAttenteAudio, &QState::exited, [this](){
-        stateAttenteAudio->removeTransition(transVolume);
+        removeVolumeTransitions(stateAttenteAudio);
         qDebug()<<"sortie attente audio";
     });
 
     QObject::connect(statePlay, &QState::entered, [this](){
-        statePlay->addTransition(transVolume);
+        addVolumeTransitions(statePlay);
         qDebug()<<"entree state play";
         QVariantMap params;
         params[kParamPath]=QVariant(path);
@@ -134,31 +152,31 @@ void Automate::setupMessages() {
     });
 
     QObject::connect(statePlay, &QState::exited, [this](){
-        statePlay->removeTransition(transVolume);
+        removeVolumeTransitions(statePlay);
         qDebug()<<"sortie state play";
     });
 
     QObject::connect(statePause, &QState::entered, [this](){
-        statePause->addTransition(transVolume);
+        addVolumeTransitions(statePause);
         qDebug()<<"entree state pause";
         QVariantMap params;
         emit signalLecteur(kSignalPause, params);
     });
 
     QObject::connect(statePause, &QState::exited, [this](){
-        statePause->removeTransition(transVolume);
+        removeVolumeTransitions(statePause);
         qDebug()<<"sortie state pause";
         QVariantMap params;
         emit signalLecteur(kSignalEndPause,params);
     });
 
     QObject::connect(stateReprendre, &QState::entered, [this](){
-        stateReprendre->addTransition(transVolume);
+        addVolumeTransitions(stateReprendre);
         qDebug()<<"entree state reprendre";
     });
 
     QObject::connect(stateReprendre, &QState::exited, [this](){
-        stateReprendre->removeTransition(transVolume);
+        removeVolumeTransitions(stateReprendre);
         qDebug()<<"sortie state reprendre";
     });
 }
@@ -174,4 +192,18 @@ void Automate::changeVolume() {
     QVariantMap params;
     params[kParamVolume] = QVariant(volume);
     emit signalLecteur(kSignalVolume, params);
+}
+
+void Automate::changeToMute() {
+    qDebug() << "automate: mute";
+    QVariantMap params;
+    params[kParamVolume] = QVariant(volume);
+    emit signalLecteur(kSignalMute, params);
+}
+
+void Automate::changeToUnmute() {
+    qDebug() << "automate: unmute";
+    QVariantMap params;
+    params[kParamVolume] = QVariant(volumeHistory);
+    emit signalLecteur(kSignalUnmute, params);
 }
