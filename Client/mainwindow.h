@@ -12,6 +12,7 @@
 #include <QCloseEvent>
 #include <QTreeWidgetItem>
 #include <QApplication>
+#include <QTimer>
 
 #include "client.h"
 
@@ -32,6 +33,10 @@ private:
     bool mute;
     QPixmap muteSymbol;
     QPixmap volumeOnSymbol;
+    QTimer *timer;
+    QTimer *timer2;
+    float secondes;
+    float minutes;
 
 signals:
     // Le format de communication vers le client
@@ -40,6 +45,7 @@ signals:
     void changeButtonState(bool);
     void changeVolumeBar(int);
     void changeTimeBar(int);
+    void changeMaxTimeBar(int);
 
 public slots:
     // Messages reçus du client
@@ -48,10 +54,12 @@ public slots:
     void volumeBarClicked(int);
     void audioProgressClicked(int t);
     void closeEvent(QCloseEvent *event);
+    void evolutionTimer(int start,int end);
 
 private slots:
     void audioDoubleClicked(QTreeWidgetItem *item, int column);
     void on_muteButton_clicked();
+    void processMessages();
 };
 
 #endif // MAINWINDOW_H

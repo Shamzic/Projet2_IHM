@@ -22,7 +22,12 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow),
     mute(false),
     muteSymbol(":/images/audio_off.png"),
-    volumeOnSymbol(":/images/audio_on.png")
+    volumeOnSymbol(":/images/audio_on.png"),
+    timer(new QTimer()),
+    timer2(new QTimer()),
+    secondes(0),
+    minutes(0)
+
 {
     ui->setupUi(this);
     this->setWindowTitle("Audio Player");
@@ -48,6 +53,8 @@ MainWindow::MainWindow(QWidget *parent) :
             QTreeWidgetItem *audio = new QTreeWidgetItem(ui->AudioTree);
             //audio->setText(0, tr(audio_files[i]));
             audio->setText(0,description);
+            //qDebug()<<"durée du morceau :"<<QString::number(f.audioProperties()->lengthInSeconds());
+            audio->setText(1,QString::number(f.audioProperties()->lengthInSeconds()));
             audio->setData(0,Qt::UserRole,QVariant(audio_files[i]));
             ui->AudioTree->setCurrentItem(audio->treeWidget()->topLevelItem(0));
         }
@@ -65,11 +72,17 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(this,SIGNAL(changeVolumeBar(int)),ui->volumeBar,SLOT(changeVolume(int)));   
 
     connect(ui->audioProgress,SIGNAL(timeChanged(int)),this,SLOT(audioProgressClicked(int)));
-      connect(this,SIGNAL(changeTimeBar(int)),ui->audioProgress,SLOT(changeAudio(int)));
+    connect(this,SIGNAL(changeTimeBar(int)),ui->audioProgress,SLOT(changeAudio(int)));
+    connect(this,SIGNAL(changeMaxTimeBar(int)),ui->audioProgress,SLOT(changeMax(int)));
+
+    connect(timer, SIGNAL(timeout()), this, SLOT(processMessages()));
+
 }
 
 MainWindow::~MainWindow() {
     delete ui;
+    timer->~QTimer();
+    timer2->~QTimer();
 }
 
 void MainWindow::closeEvent(QCloseEvent *) {
@@ -81,16 +94,18 @@ void MainWindow::closeEvent(QCloseEvent *) {
 // varmap ??
 void MainWindow::playbuttonClicked(bool isPlaying) {
     QVariantMap varmap;
-    if (isPlaying && ui->AudioTree->selectedItems().size() == 0){
+    if (isPlaying && ui->AudioTree->selectedItems().size() != 0){
         ui->AudioTree->setCurrentItem(ui->AudioTree->currentItem());
         varmap[kParamPath] = ui->AudioTree->currentItem()->data(0,Qt::UserRole);
         emit signalUI(kSignalChangeAudio,varmap);
     } else {
         varmap[kParamPath] = ui->AudioTree->currentItem()->data(0,Qt::UserRole);
+
         if (isPlaying) {
             emit signalUI(kSignalPlay,varmap);
         } else {
             emit signalUI(kSignalPause,varmap);
+
         }
     }
 }
@@ -109,6 +124,11 @@ void MainWindow::volumeBarClicked(int v) {
 void MainWindow::audioProgressClicked(int t) {
     QVariantMap varmap;
     varmap[kParamTime] = t;
+
+
+    // todo : signal mise à jour timer
+
+
     emit signalUI(kSignalTime,varmap);
 }
 
@@ -135,9 +155,16 @@ void MainWindow::audioDoubleClicked(QTreeWidgetItem *item, int column) {
     QVariantMap varmap;
     varmap[kParamPath] = item->data(column,Qt::UserRole);
     qDebug() << "column"<<column;
+    bool ok;
+    int duree = (item->text(1)).toInt(&ok,10);
+    QString dureeString = item->text(1);
+    qDebug()<<" durée : "<<dureeString;
+    evolutionTimer(0,duree);
+    emit changeMaxTimeBar(duree);
     emit changeButtonState(true);
     emit signalUI(kSignalChangeAudio,varmap);
 }
+
 
 void MainWindow::on_muteButton_clicked() {
     QVariantMap varmap;
@@ -152,4 +179,26 @@ void MainWindow::on_muteButton_clicked() {
         emit changeVolumeBar(0);
         emit signalUI(kSignalMute,varmap);
     }
+}
+
+void MainWindow::evolutionTimer(int start,int end){
+    timer->start(1000);
+    timer2->start(end*1000);
+    qDebug()<<"Timer go ! ";
+}
+
+void MainWindow::processMessages(){
+    //qDebug()<<"Temps restant : "<<(timer2->remainingTime()/1000)/60<<":"<<(timer2->remainingTime()/1000)%60;
+    QString temps_restant = ""+QString::number((timer2->remainingTime()/1000)/60)+":"+QString::number((timer2->remainingTime()/1000)%60);
+    secondes++;
+    if(secondes==60){
+        minutes++;
+        secondes=0;
+    }
+
+    QString temps_passe =""+QString::number(minutes)+":"+QString::number(secondes);
+    if(secondes<10)
+        temps_passe =""+QString::number(minutes)+":0"+QString::number(secondes);
+    ui->tempsRestant->setText(temps_restant);
+    ui->tempsPasse->setText(temps_passe);
 }
