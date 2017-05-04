@@ -112,7 +112,6 @@ void AudioProgressBar::mousePressEvent(QMouseEvent *event) {
 
 void AudioProgressBar::changeMax(int timemax){
     this->audioLength=timemax;
-    qDebug()<<"change max time :"<<audioLength;
 }
 
 void AudioProgressBar::addOneSecond() {

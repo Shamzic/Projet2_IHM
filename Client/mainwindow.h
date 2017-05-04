@@ -38,6 +38,7 @@ private:
     QTimer *timer2;
     float secondes;
     float minutes;
+    int duree;
 
 signals:
     // Le format de communication vers le client
@@ -56,7 +57,7 @@ public slots:
     void volumeBarClicked(int);
     void audioProgressClicked(int t);
     void closeEvent(QCloseEvent *event);
-    void evolutionTimer(int start,int end);
+    void evolutionTimer(int duration);
     void timer2timeout();
 
 private slots:

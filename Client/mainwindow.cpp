@@ -26,7 +26,8 @@ MainWindow::MainWindow(QWidget *parent) :
     timer(new QTimer()),
     timer2(new QTimer()),
     secondes(0),
-    minutes(0)
+    minutes(0),
+    duree(0)
 
 {
     ui->setupUi(this);
@@ -148,10 +149,21 @@ void MainWindow::ajouterAHistorique(QString path) {
 
 void MainWindow::audioProgressClicked(int t) {
     QVariantMap varmap;
+    QString dureeString;
     varmap[kParamTime] = t;
-
-    // todo : signal mise à jour timer
-
+    //evolutionTimer(duree-t); //timer??
+    /* //FUUUUUCK!!!
+    qDebug() << "duree :" << duree;
+    qDebug() << "t : " << t;
+    qDebug() << "temps restant" << duree-t;
+    minutes = duree/60;
+    secondes = duree%60;
+    if (secondes<10)
+        dureeString = QString::number(minutes)+":0"+QString::number(secondes);
+    else
+        dureeString = QString::number(minutes)+":"+QString::number(secondes);
+    ui->tempsPasse->setText(dureeString);
+    */
     emit signalUI(kSignalTime,varmap);
 }
 
@@ -178,8 +190,7 @@ void MainWindow::message(signalType sig, QVariantMap params) {
             emit changeVolumeBar(params[kParamVolume].toInt());
             break;
         case kSignalTime:
-            qDebug() << "got time signal ";
-            qDebug() << "time : " << params[kParamTime].toInt() ;
+            qDebug() << "got time signal, time: " << params[kParamTime].toInt() ;
             emit changeTimeBar(params[kParamTime].toInt());
         default:
             break;
@@ -191,8 +202,8 @@ void MainWindow::audioDoubleClicked(QTreeWidgetItem *item, int column) {
     QString dureeString;
     bool ok;
     varmap[kParamPath] = item->data(column,Qt::UserRole);
-    int duree = (item->text(1)).toInt(&ok,10);
-    int s=0, m=0;
+    duree = (item->text(1)).toInt(&ok,10);
+    int s=0, m=0; //pour le temps restant
     m = duree/60;
     s = duree%60;
     if (s<10)
@@ -203,7 +214,7 @@ void MainWindow::audioDoubleClicked(QTreeWidgetItem *item, int column) {
     secondes = 0;
     ui->tempsPasse->setText("0:00");
     ui->tempsRestant->setText(dureeString);
-    evolutionTimer(0,duree);
+    evolutionTimer(duree);
     emit changeMaxTimeBar(duree);
     emit changeButtonState(true);
     emit changeTimeBar(0);
@@ -226,18 +237,16 @@ void MainWindow::on_muteButton_clicked() {
     }
 }
 
-void MainWindow::evolutionTimer(int start,int end){
+void MainWindow::evolutionTimer(int duration){
     timer->stop();
     timer2->stop();
     timer->setInterval(1000);
-    timer2->setInterval(end*1000);
+    timer2->setInterval(duration*1000);
     timer->start(1000);
-    timer2->start(end*1000);
-    qDebug()<<"Timer go ! ";
+    timer2->start(duration*1000);
 }
 
 void MainWindow::processMessages(){
-    //qDebug()<<"Temps restant : "<<(timer2->remainingTime()/1000)/60<<":"<<(timer2->remainingTime()/1000)%60;
     QString temps_restant = ""+QString::number((timer2->remainingTime()/1000)/60)+":"+QString::number((timer2->remainingTime()/1000)%60);
     secondes++;
     if(secondes==60){
