@@ -31,7 +31,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
 {
     ui->setupUi(this);
-    this->setWindowTitle("Audio Player");
+    ui->retranslateUi(this);
+    this->setWindowTitle(tr("Audio Player"));
 
     int i;
     for (i=0; audio_files[i] != nullptr; i++) {
@@ -260,4 +261,23 @@ void MainWindow::processMessages(){
 
 void MainWindow::timer2timeout() {
     qDebug() << "timer 2";
+}
+
+void MainWindow::on_actionAnglais_triggered()
+{
+    QTranslator translator;
+    translator.load("../Client/client_en.qm"); // A voir  sur MAC
+    QApplication::installTranslator(&translator);
+    //QApplication::removeTranslator(&translator);
+    ui->retranslateUi(this);
+}
+
+void MainWindow::on_actionFran_ais_triggered()
+{
+    QTranslator translator;
+    translator.load("../Client/client_en.qm"); // A voir  sur MAC
+    //QApplication::installTranslator(&translator);
+    QApplication::removeTranslator(&translator);
+    ui->retranslateUi(this);
+    this->setWindowTitle(tr("Audio Player"));
 }

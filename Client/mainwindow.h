@@ -13,7 +13,7 @@
 #include <QTreeWidgetItem>
 #include <QApplication>
 #include <QTimer>
-
+#include <QTranslator>
 #include "client.h"
 
 namespace Ui {
@@ -27,6 +27,7 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+
 
 private:
     Ui::MainWindow *ui;
@@ -64,6 +65,8 @@ private slots:
     void audioDoubleClicked(QTreeWidgetItem *item, int column);
     void on_muteButton_clicked();
     void processMessages();
+    void on_actionAnglais_triggered();
+    void on_actionFran_ais_triggered();
 };
 
 #endif // MAINWINDOW_H
