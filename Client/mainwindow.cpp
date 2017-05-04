@@ -28,7 +28,8 @@ MainWindow::MainWindow(QWidget *parent) :
     secondes(0),
     minutes(0),
     duree(0),
-    nom_morceau("")
+    nom_morceau(""),
+    ouverture(true)
 
 {
     ui->setupUi(this);
@@ -116,8 +117,9 @@ void MainWindow::playbuttonClicked(bool isPlaying) {
             emit signalUI(kSignalPlay,varmap);
             qDebug()<<"current song selected : "<<ui->AudioTree->currentItem()->text(0);
             qDebug()<<"current nom morceau : "<<nom_morceau;
-            if(ui->AudioTree->currentItem()->text(0)!=nom_morceau)
+            if(ui->AudioTree->currentItem()->text(0)!=nom_morceau || (ouverture==true) )
             {
+                ouverture=false;
                 int col = 0;
                audioDoubleClicked(ui->AudioTree->currentItem(),col);
                qDebug()<<"playyy";
@@ -234,6 +236,7 @@ void MainWindow::message(signalType sig, QVariantMap params) {
 }
 
 void MainWindow::audioDoubleClicked(QTreeWidgetItem *item, int column) {
+    qDebug()<<"entrée double clic";
     QVariantMap varmap;
     QString dureeString;
     bool ok;

@@ -41,6 +41,7 @@ private:
     float minutes;
     int duree;
     QString nom_morceau;
+    bool ouverture;
 
 signals:
     // Le format de communication vers le client
