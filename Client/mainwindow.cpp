@@ -80,6 +80,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(timer, SIGNAL(timeout()), this, SLOT(processMessages()));
     connect(timer2, SIGNAL(timeout()), this, SLOT(timer2timeout()));
     ui->AudioTree->setCurrentItem(ui->AudioTree->currentItem());
+    //ui->AudioTree->setCurrentItem(ui->AudioTree->topLevelItem(0));
 }
 
 MainWindow::~MainWindow() {
@@ -247,7 +248,7 @@ void MainWindow::on_muteButton_clicked() {
     } else {
         mute = true;
         ui->muteButton->setIcon(QIcon(muteSymbol));
-        emit changeVolumeBar(0);
+        //emit changeVolumeBar(0);
         emit signalUI(kSignalMute,varmap);
     }
 }
