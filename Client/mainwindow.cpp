@@ -390,7 +390,7 @@ void MainWindow::startSynchronize(QVariantMap params) {
         qDebug() << "ici3";
             emit changeMaxTimeBar(duree);
             //emit changeTimeBar(params[kParamTime].toInt());
-            //timer2->setInterval();
+            //timer2->setInterval(duree-params[kParamTime].toInt());
             break;
         default:
             break;
