@@ -287,7 +287,6 @@ void MainWindow::on_actionAnglais_triggered()
     QTranslator translator;
     translator.load("../Client/client_en.qm"); // A voir  sur MAC
     QApplication::installTranslator(&translator);
-    //QApplication::removeTranslator(&translator);
     ui->retranslateUi(this);
 }
 
@@ -295,8 +294,12 @@ void MainWindow::on_actionFran_ais_triggered()
 {
     QTranslator translator;
     translator.load("../Client/client_en.qm"); // A voir  sur MAC
-    //QApplication::installTranslator(&translator);
     QApplication::removeTranslator(&translator);
     ui->retranslateUi(this);
-    this->setWindowTitle(tr("Audio Player"));
+    this->setWindowTitle(tr("MPV-PLAYER-FRANCAIS"));
+}
+
+void MainWindow::on_action_triggered()
+{
+    QApplication::quit();
 }
