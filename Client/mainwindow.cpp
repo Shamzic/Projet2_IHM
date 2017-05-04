@@ -112,7 +112,7 @@ void MainWindow::playbuttonClicked(bool isPlaying) {
         varmap[kParamPath] = ui->AudioTree->currentItem()->data(0,Qt::UserRole);
         varmap[kParamLength] = ui->AudioTree->currentItem()->text(1).toInt();
         if (isPlaying) {
-            timer2->setInterval(varmap[kParamLength].toInt());
+            timer2->setInterval(varmap[kParamLength].toInt()*1000);
             emit signalUI(kSignalPlay,varmap);
             qDebug()<<"current song selected : "<<ui->AudioTree->currentItem()->text(0);
             qDebug()<<"current nom morceau : "<<nom_morceau;
@@ -198,6 +198,7 @@ void MainWindow::message(signalType sig, QVariantMap params) {
             timer2->stop();
             break;
         case kSignalEndPause:
+        qDebug() << "end pause";
             timer->start();
             timer2->start();
             break;
@@ -214,7 +215,6 @@ void MainWindow::message(signalType sig, QVariantMap params) {
             emit changeTimeBar(params[kParamTime].toInt());
             break;
         case kSignalEnd:
-            qDebug() << "ici?";
             on_action_triggered();
             break;
         default:
@@ -405,7 +405,7 @@ void MainWindow::startSynchronize(QVariantMap params) {
         qDebug() << "ici3";
             emit changeMaxTimeBar(duree);
             //emit changeTimeBar(params[kParamTime].toInt());
-            //timer2->setInterval(duree-params[kParamTime].toInt());
+            //timer2->setInterval(duree-params[kParamTime].toInt()*1000);
             break;
         default:
             break;
