@@ -158,7 +158,6 @@ void Automate::setupMessages() {
     QObject::connect(stateAttenteAudio, &QState::exited, [this](){
         removeVolumeTransitions(stateAttenteAudio);
         TpsLecture->stop();
-        qDebug()<<"sortie attente audio";
     });
 
     QObject::connect(statePlay, &QState::entered, [this](){
@@ -173,7 +172,6 @@ void Automate::setupMessages() {
     QObject::connect(statePlay, &QState::exited, [this](){
         removeVolumeTransitions(statePlay);
         TpsLecture->stop();
-        qDebug()<<"sortie state play";
     });
 
     QObject::connect(statePause, &QState::entered, [this](){
@@ -187,7 +185,6 @@ void Automate::setupMessages() {
     QObject::connect(statePause, &QState::exited, [this](){
         removeVolumeTransitions(statePause);
         TpsLecture->stop();
-        qDebug()<<"sortie state pause";
         QVariantMap params;
         emit signalLecteur(kSignalEndPause,params);
     });
@@ -201,7 +198,6 @@ void Automate::setupMessages() {
     QObject::connect(stateReprendre, &QState::exited, [this](){
         removeVolumeTransitions(stateReprendre);
         TpsLecture->stop();
-        qDebug()<<"sortie state reprendre";
     });
 }
 
