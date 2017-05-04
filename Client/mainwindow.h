@@ -64,6 +64,7 @@ private slots:
     void processMessages();
     void on_actionAnglais_triggered();
     void on_actionFran_ais_triggered();
+    void on_action_triggered();
 };
 
 #endif // MAINWINDOW_H

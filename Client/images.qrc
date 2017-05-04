@@ -11,5 +11,6 @@
         <file>images/audio_on.png</file>
         <file>images/volumecontrol.png</file>
         <file>images/volumeslider.png</file>
+        <file>images/quit.png</file>
     </qresource>
 </RCC>

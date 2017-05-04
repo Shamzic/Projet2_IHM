@@ -56,7 +56,8 @@
         <translation>English</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="38"/>
+        <location filename="mainwindow.cpp" line="34"/>
+        <location filename="mainwindow.cpp" line="260"/>
         <source>Audio Player</source>
         <translation>MPV-PLAYER</translation>
     </message>
