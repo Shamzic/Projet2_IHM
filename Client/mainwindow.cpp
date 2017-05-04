@@ -336,7 +336,6 @@ void MainWindow::on_fastBackButton_clicked()
     {
         i--;
         qDebug()<<"i : "<<i;
-       // Do something with item ...
     }
 
     ui->AudioTree->topLevelItem(i)->setSelected(false);
