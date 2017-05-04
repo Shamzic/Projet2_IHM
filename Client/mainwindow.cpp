@@ -155,6 +155,9 @@ void MainWindow::audioProgressClicked(int t) {
     QString dureeString;
     varmap[kParamTime] = t;
     evolutionTimer(duree-t); //changer temps restant...
+    qDebug() << "duree :" << duree;
+    qDebug() << "t :" << t;
+    qDebug() << "tmps restant :" << duree-t;
     minutes = t/60;
     secondes = t%60;
     if (secondes<10)
@@ -187,8 +190,7 @@ void MainWindow::message(signalType sig, QVariantMap params) {
             emit changeVolumeBar(params[kParamVolume].toInt());
             break;
         case kSignalGetProperties:
-        qDebug() << "len" << params[kParamLength].toInt();
-        qDebug() << "time" << params[kParamTime].toInt();
+            /*
             path= params[kParamPath].toString();
             duree = params[kParamLength].toInt();
             if (params[kParamEtat].toInt() == kStatePlay) {
@@ -199,6 +201,7 @@ void MainWindow::message(signalType sig, QVariantMap params) {
             emit changeVolumeBar(params[kParamVolume].toInt());
             emit changeMaxTimeBar(duree);
             emit changeTimeBar(params[kParamTime].toInt());
+            */
             break;
         case kSignalTime:
             qDebug() << "got time signal, time: " << params[kParamTime].toInt() ;
