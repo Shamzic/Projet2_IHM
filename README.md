@@ -2,14 +2,12 @@
 
 ## Exécution  
 
-Lancer mpv dans le répertoire principal via la commande :  
 
+1-Lancer mpv dans le répertoire principal via la commande :  
 mpv --idle --input-ipc-server=/tmp/mpv-socket
-
-Lancer le serveur  
-Lancer le ou les clients
-
-Le script runMPV lance MPV.
+(Sinon, lancer le script runMPV lance MPV.)
+2-Lancer le serveur  
+3-Lancer le ou les clients
 
 ## Partage du travail
 
