@@ -9,7 +9,7 @@ mpv --idle --input-ipc-server=/tmp/mpv-socket
 Lancer le serveur  
 Lancer le ou les clients
 
-Le script runmpv lance MPV.
+Le script runMPV lance MPV.
 
 ## Partage du travail
 
