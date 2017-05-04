@@ -1,1 +1,1 @@
-mpv --idle --input-ipc-server=/tmp/mpv-socket
+mpv --idle --input-ipc-server=/tmp/mpv-socket --no-audio-display
