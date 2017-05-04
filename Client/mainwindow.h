@@ -41,6 +41,7 @@ private:
     float minutes;
     int duree;
     void startSynchronize(QVariantMap);
+    QString nom_morceau;
 
 signals:
     // Le format de communication vers le client

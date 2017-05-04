@@ -27,7 +27,8 @@ MainWindow::MainWindow(QWidget *parent) :
     timer2(new QTimer()),
     secondes(0),
     minutes(0),
-    duree(0)
+    duree(0),
+    nom_morceau("")
 
 {
     ui->setupUi(this);
@@ -59,6 +60,8 @@ MainWindow::MainWindow(QWidget *parent) :
             audio->setData(0,Qt::UserRole,QVariant(audio_files[i]));
             ui->AudioTree->setCurrentItem(audio->treeWidget()->topLevelItem(0));
             ui->AudioTree->currentItem()->setSelected(true);
+            //qDebug()<<"audio à l'ini : "<<ui->AudioTree->currentItem()->text(0);
+
         }
     }
 
@@ -82,6 +85,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(timer2, SIGNAL(timeout()), this, SLOT(timer2timeout()));
     ui->AudioTree->setCurrentItem(ui->AudioTree->currentItem());
     ui->AudioTree->setCurrentItem(ui->AudioTree->topLevelItem(0));
+    qDebug()<<"audio à l'ini : "<<ui->AudioTree->currentItem()->text(0);
+    nom_morceau=ui->AudioTree->currentItem()->text(0);
 }
 
 MainWindow::~MainWindow() {
@@ -109,7 +114,16 @@ void MainWindow::playbuttonClicked(bool isPlaying) {
         if (isPlaying) {
             timer2->setInterval(varmap[kParamLength].toInt());
             emit signalUI(kSignalPlay,varmap);
+            qDebug()<<"current song selected : "<<ui->AudioTree->currentItem()->text(0);
+            qDebug()<<"current nom morceau : "<<nom_morceau;
+            if(ui->AudioTree->currentItem()->text(0)!=nom_morceau)
+            {
+                int col = 0;
+               audioDoubleClicked(ui->AudioTree->currentItem(),col);
+               qDebug()<<"playyy";
+            }
         } else {
+
             timer->stop();
             timer2->stop();
             emit signalUI(kSignalPause,varmap);
@@ -213,6 +227,7 @@ void MainWindow::audioDoubleClicked(QTreeWidgetItem *item, int column) {
     QString dureeString;
     bool ok;
     varmap[kParamPath] = item->data(column,Qt::UserRole);
+    nom_morceau=item->text(0);
     duree = (item->text(1)).toInt(&ok,10);
     varmap[kParamLength] = duree;
     int s=0, m=0; //pour le temps restant
