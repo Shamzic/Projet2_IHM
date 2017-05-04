@@ -10,12 +10,13 @@
 
 Automate::Automate(QObject *parent) :
     QObject(parent),
-    volume(100),
-    temps(0)
+    temps(0),
+    volume(100)
 {
     // Timer durée des
     TpsLecture = new QTimer(this);
     TpsLecture->setSingleShot(true);
+    TpsLecture->stop();
     TpsLecture->setTimerType(Qt::PreciseTimer);
 
     // Machine à états
@@ -50,7 +51,7 @@ Automate::Automate(QObject *parent) :
     stateAttenteAudio->addTransition(this,SIGNAL(signalFin()),stateFin);
 
     // play vers attenteAudio, si fin du morceau
-    statePlay->addTransition(TpsLecture,SIGNAL(timeout()),stateAttenteAudio);
+    //statePlay->addTransition(TpsLecture,SIGNAL(timeout()),stateAttenteAudio);
     // play vers pause, si signal pause
     statePlay->addTransition(this,SIGNAL(signalPause()),statePause);
     statePlay->addTransition(this,SIGNAL(signalNewAudio()),statePlay);
@@ -65,18 +66,25 @@ Automate::Automate(QObject *parent) :
     stateReprendre->addTransition(TpsLecture,SIGNAL(timeout()),stateAttenteAudio);
     stateReprendre->addTransition(this,SIGNAL(signalNewAudio()),statePlay);
 
+    QObject::connect(stateReprendre, SIGNAL(entered()), TpsLecture, SLOT(start()));
+    QObject::connect(statePlay, SIGNAL(entered()), TpsLecture, SLOT(start()));
+    QObject::connect(stateAttenteAudio, SIGNAL(entered()), TpsLecture, SLOT(stop()));
+    QObject::connect(statePause, SIGNAL(entered()), TpsLecture, SLOT(stop()));
+
     QObject::connect(stateFin, &QState::entered, [this](){
       qDebug()<<"Fini";
-      //QVariantMap params;
-      //params[kParamPhase]=QVariant(kPhaseEndCycle);
-      //emit signalMachine(kSignalPhase, params);
       cleanup();
     });
 
     Lecteur->setInitialState(stateAttenteAudio);
     Lecteur->start();
-
     setupMessages();
+
+    connect(TpsLecture,SIGNAL(timeout()),this,SLOT(putain()));
+}
+
+void Automate::putain() {
+    qDebug() << "timeout";
 }
 
 // messages reçu depuis le serveur
@@ -97,6 +105,7 @@ void Automate::message(signalType sig, QVariantMap params) {
             path = params[kParamPath].toString();
             length = params[kParamLength].toInt();
             TpsLecture->setInterval(length);
+            qDebug() << "timer changé";
             emit signalNewAudio();
             break;
         case kSignalVolume:
@@ -118,7 +127,7 @@ void Automate::message(signalType sig, QVariantMap params) {
             temps = params[kParamTime].toInt();
             restant = length-temps;
             TpsLecture->setInterval(restant);
-            TpsLecture->start();
+            qDebug() << "timer changé";
             emit signalTime();
         case kSignalGetProperties:
             properties[kParamVolume] = QVariant(volume);
@@ -151,19 +160,21 @@ void Automate::removeVolumeTransitions(QState * s) {
 void Automate::setupMessages() {
     QObject::connect(stateAttenteAudio, &QState::entered, [this](){
         addVolumeTransitions(stateAttenteAudio);
-        TpsLecture->stop();
         qDebug()<<"entree attente audio";
+        qDebug() << TpsLecture->remainingTime();
+        qDebug() << TpsLecture->isActive();
     });
 
     QObject::connect(stateAttenteAudio, &QState::exited, [this](){
         removeVolumeTransitions(stateAttenteAudio);
-        TpsLecture->stop();
     });
 
     QObject::connect(statePlay, &QState::entered, [this](){
+    qDebug() << "duree :" << TpsLecture->interval();
         addVolumeTransitions(statePlay);
         qDebug()<<"entree state play";
-        TpsLecture->start();
+        qDebug() << TpsLecture->remainingTime();
+        qDebug() << TpsLecture->isActive();
         QVariantMap params;
         params[kParamPath]=QVariant(path);
         emit signalLecteur(kSignalPlay, params);
@@ -171,33 +182,28 @@ void Automate::setupMessages() {
 
     QObject::connect(statePlay, &QState::exited, [this](){
         removeVolumeTransitions(statePlay);
-        TpsLecture->stop();
     });
 
     QObject::connect(statePause, &QState::entered, [this](){
         addVolumeTransitions(statePause);
         qDebug()<<"entree state pause";
-        TpsLecture->stop();
         QVariantMap params;
         emit signalLecteur(kSignalPause, params);
     });
 
     QObject::connect(statePause, &QState::exited, [this](){
         removeVolumeTransitions(statePause);
-        TpsLecture->stop();
         QVariantMap params;
         emit signalLecteur(kSignalEndPause,params);
     });
 
     QObject::connect(stateReprendre, &QState::entered, [this](){
         addVolumeTransitions(stateReprendre);
-        TpsLecture->start();
         qDebug()<<"entree state reprendre";
     });
 
     QObject::connect(stateReprendre, &QState::exited, [this](){
         removeVolumeTransitions(stateReprendre);
-        TpsLecture->stop();
     });
 }
 

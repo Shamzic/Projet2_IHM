@@ -68,6 +68,7 @@ public slots:
     void changeToMute();
     void changeToUnmute();
     void changeTime();
+    void putain();
 };
 
 #endif // AUTOMATE_H

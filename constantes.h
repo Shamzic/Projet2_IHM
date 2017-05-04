@@ -18,6 +18,8 @@ const char kParamTime[] = "time";
 const char kParamLength[] = "duree";
 const char kParamEtat[] = "etat";
 
+const char kTimerInterval[]="interval";
+
 const char kJsonSignal[]="signal";
 const char kJsonParams[]="params";
 
