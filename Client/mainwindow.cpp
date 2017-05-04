@@ -151,19 +151,14 @@ void MainWindow::audioProgressClicked(int t) {
     QVariantMap varmap;
     QString dureeString;
     varmap[kParamTime] = t;
-    //evolutionTimer(duree-t); //timer??
-    /* //FUUUUUCK!!!
-    qDebug() << "duree :" << duree;
-    qDebug() << "t : " << t;
-    qDebug() << "temps restant" << duree-t;
-    minutes = duree/60;
-    secondes = duree%60;
+    evolutionTimer(duree-t); //changer temps restant...
+    minutes = t/60;
+    secondes = t%60;
     if (secondes<10)
         dureeString = QString::number(minutes)+":0"+QString::number(secondes);
     else
         dureeString = QString::number(minutes)+":"+QString::number(secondes);
     ui->tempsPasse->setText(dureeString);
-    */
     emit signalUI(kSignalTime,varmap);
 }
 
@@ -247,6 +242,7 @@ void MainWindow::evolutionTimer(int duration){
 }
 
 void MainWindow::processMessages(){
+
     QString temps_restant = ""+QString::number((timer2->remainingTime()/1000)/60)+":"+QString::number((timer2->remainingTime()/1000)%60);
     secondes++;
     if(secondes==60){
