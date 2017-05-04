@@ -40,6 +40,7 @@ private:
     float secondes;
     float minutes;
     int duree;
+    void startSynchronize(QVariantMap);
 
 signals:
     // Le format de communication vers le client

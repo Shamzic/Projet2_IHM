@@ -193,18 +193,7 @@ void MainWindow::message(signalType sig, QVariantMap params) {
             emit changeVolumeBar(params[kParamVolume].toInt());
             break;
         case kSignalGetProperties:
-            /*
-            path= params[kParamPath].toString();
-            duree = params[kParamLength].toInt();
-            if (params[kParamEtat].toInt() == kStatePlay) {
-                emit changeButtonState(true);
-                audioProgressClicked(params[kParamTime].toInt());
-                timer->start();
-            }
-            emit changeVolumeBar(params[kParamVolume].toInt());
-            emit changeMaxTimeBar(duree);
-            emit changeTimeBar(params[kParamTime].toInt());
-            */
+            startSynchronize(params);
             break;
         case kSignalTime:
             qDebug() << "got time signal, time: " << params[kParamTime].toInt() ;
@@ -376,4 +365,34 @@ void MainWindow::on_fastBackButton_clicked()
     ui->AudioTree->setCurrentItem(ui->AudioTree->topLevelItem(i));
 
     audioDoubleClicked(ui->AudioTree->topLevelItem(i),0);
+}
+
+void MainWindow::startSynchronize(QVariantMap params) {
+    QString path = params[kParamPath].toString();
+    emit changeVolumeBar(params[kParamVolume].toInt());
+
+    qDebug()  << params[kParamTime].toInt() ;
+    switch (params[kParamEtat].toInt()) {
+        case kStateAttente:
+        qDebug() << "ici1";
+            minutes=0; secondes=0;
+            break;
+        case kStatePlay:
+        case kStateReprendre:
+        qDebug() << "ici2";
+            duree = params[kParamLength].toInt();
+            emit changeMaxTimeBar(duree);
+            emit changeButtonState(true);
+            //evolutionTimer(duree);
+            //emit changeTimeBar(params[kParamTime].toInt());
+            break;
+        case kStatePause:
+        qDebug() << "ici3";
+            emit changeMaxTimeBar(duree);
+            //emit changeTimeBar(params[kParamTime].toInt());
+            //timer2->setInterval();
+            break;
+        default:
+            break;
+    }
 }

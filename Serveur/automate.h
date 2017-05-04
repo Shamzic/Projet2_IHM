@@ -39,11 +39,10 @@ private:
     QString path;
     int state;
     int length = 0;
-    int temps;
+    int temps = 0;
     int volume = 100;
     int volumeHistory = 100;
     bool mute = false;
-    int duration = 0;
     void setupMessages();
     void cleanup();
     void addVolumeTransitions(QState * s);
@@ -68,7 +67,6 @@ public slots:
     void changeToMute();
     void changeToUnmute();
     void changeTime();
-    void putain();
 };
 
 #endif // AUTOMATE_H
