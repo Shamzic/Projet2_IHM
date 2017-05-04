@@ -108,7 +108,6 @@ void Serveur::readyRead() {
             QJsonParseError error;
             QJsonDocument jDoc=QJsonDocument::fromJson(a, &error);
             QJsonObject jsonObject=jDoc.object();
-            qDebug() << "msg reçu du client" ;
             emit signalFromServer((signalType)jsonObject[kJsonSignal].toInt(),
             jsonObject[kJsonParams].toObject().toVariantMap());
         }
@@ -131,7 +130,6 @@ void Serveur::sendMessageToClients(QJsonObject jsonObject) {
         m_clients.at(i)->write(bytes.data(), bytes.length());
         m_clients.at(i)->flush();
     }
-    qDebug() << "msg envoyé à client" ;
 }
 
 /** Traiter un message de l'automate, càd préparer un message vers MPV et
@@ -156,6 +154,8 @@ void Serveur::message(signalType sig,QVariantMap varmap) {
             a.append(true);
             jsonObject["command"]=a;
             sendRequestToMPV(jsonObject);
+            jsonObjectClient[kJsonSignal]=sig;
+            sendMessageToClients(jsonObjectClient);
             break;
         case kSignalEndPause:
             a.append("set_property");
@@ -163,6 +163,8 @@ void Serveur::message(signalType sig,QVariantMap varmap) {
             a.append(false);
             jsonObject["command"]=a;
             sendRequestToMPV(jsonObject);
+            jsonObjectClient[kJsonSignal]=sig;
+            sendMessageToClients(jsonObjectClient);
             break;
         case kSignalVolume:
         case kSignalMute:
@@ -185,7 +187,6 @@ void Serveur::message(signalType sig,QVariantMap varmap) {
             jsonObjectClient[kJsonSignal]=sig;
             jsonObjectClient[kJsonParams]=QJsonObject::fromVariantMap(varmap);
             sendMessageToClients(jsonObjectClient);
-            qDebug() << "envoi time";
             break;
         case kSignalGetProperties:
             jsonObjectClient[kJsonSignal]=kSignalGetProperties;

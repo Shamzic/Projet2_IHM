@@ -23,7 +23,7 @@ AudioProgressBar::AudioProgressBar(QWidget *parent) :
     QWidget(parent),
 
     timePassed(0),
-    audioLength(2000), //pour tester
+    audioLength(0),
     pictureFilledProgressBar(":/images/bar_meter.png"),
     pictureEmptyProgressBar(":/images/bar_meter_empty.png")
 {
@@ -76,6 +76,7 @@ void AudioProgressBar::paintEvent(QPaintEvent *){
  *            Evenement de souris.
  */
 void AudioProgressBar::mouseMoveEvent(QMouseEvent *event) {
+    if (audioLength == 0) return;
     float pourc = (float)(event->x())/(float)pictureEmptyProgressBar.width();
     timePassed = floor(pourc*audioLength);
     if (timePassed < 0 )
@@ -99,6 +100,7 @@ void AudioProgressBar::mouseMoveEvent(QMouseEvent *event) {
  *            Evenement de souris.
  */
 void AudioProgressBar::mousePressEvent(QMouseEvent *event) {
+    if (audioLength == 0) return;
     float pourc = (float)(event->x())/(float)pictureEmptyProgressBar.width();
     timePassed = floor(pourc*audioLength);
     if (timePassed < 0 )

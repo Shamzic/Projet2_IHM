@@ -15,6 +15,8 @@ const char kVitesseLecture[]="vitesse";
 const char kParamPath[]="path";
 const char kParamVolume[] = "volume";
 const char kParamTime[] = "time";
+const char kParamLength[] = "duree";
+const char kParamEtat[] = "etat";
 
 const char kJsonSignal[]="signal";
 const char kJsonParams[]="params";
@@ -37,6 +39,13 @@ enum signalType {
 enum speed {
     kVitesseNormale=0,
     kVitesseDouble=1
+};
+
+enum states {
+    kStatePause,
+    kStatePlay,
+    kStateAttente,
+    kStateReprendre
 };
 
 const char * const audio_files[]= {

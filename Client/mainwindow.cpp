@@ -79,6 +79,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(timer, SIGNAL(timeout()), this, SLOT(processMessages()));
     connect(timer2, SIGNAL(timeout()), this, SLOT(timer2timeout()));
+    ui->AudioTree->setCurrentItem(ui->AudioTree->currentItem());
 }
 
 MainWindow::~MainWindow() {
@@ -96,20 +97,21 @@ void MainWindow::closeEvent(QCloseEvent *) {
 // varmap ??
 void MainWindow::playbuttonClicked(bool isPlaying) {
     QVariantMap varmap;
-    if (isPlaying && ui->AudioTree->selectedItems().size() != 0){
-        ui->AudioTree->setCurrentItem(ui->AudioTree->currentItem());
+   // if (ui->AudioTree->selectedItems().size() != 0) {
+    //    ui->AudioTree->setCurrentItem(ui->AudioTree->currentItem());
+     //   varmap[kParamPath] = ui->AudioTree->currentItem()->data(0,Qt::UserRole);
+     //   emit signalUI(kSignalChangeAudio,varmap);
+    //} else {
         varmap[kParamPath] = ui->AudioTree->currentItem()->data(0,Qt::UserRole);
-        emit signalUI(kSignalChangeAudio,varmap);
-    } else {
-        varmap[kParamPath] = ui->AudioTree->currentItem()->data(0,Qt::UserRole);
-
+        varmap[kParamLength] = duree;
         if (isPlaying) {
             emit signalUI(kSignalPlay,varmap);
         } else {
+            timer->stop();
+            timer2->stop();
             emit signalUI(kSignalPause,varmap);
-
         }
-    }
+   // }
 }
 
 void MainWindow::volumeBarClicked(int v) {
@@ -171,19 +173,32 @@ void MainWindow::message(signalType sig, QVariantMap params) {
             path = params[kParamPath].toString();
             ajouterAHistorique(path);
             break;
+        case kSignalPause:
+            timer->stop();
+            timer2->stop();
+            break;
+        case kSignalEndPause:
+            timer->start();
+            timer2->start();
+            break;
         case kSignalVolume:
         case kSignalMute:
         case kSignalUnmute:
             emit changeVolumeBar(params[kParamVolume].toInt());
             break;
         case kSignalGetProperties:
+        qDebug() << "len" << params[kParamLength].toInt();
+        qDebug() << "time" << params[kParamTime].toInt();
             path= params[kParamPath].toString();
-            params[kParamVolume].toInt();
-            if (path!="") {
+            duree = params[kParamLength].toInt();
+            if (params[kParamEtat].toInt() == kStatePlay) {
                 emit changeButtonState(true);
-                qDebug() << path;
+                audioProgressClicked(params[kParamTime].toInt());
+                timer->start();
             }
             emit changeVolumeBar(params[kParamVolume].toInt());
+            emit changeMaxTimeBar(duree);
+            emit changeTimeBar(params[kParamTime].toInt());
             break;
         case kSignalTime:
             qDebug() << "got time signal, time: " << params[kParamTime].toInt() ;
@@ -199,6 +214,7 @@ void MainWindow::audioDoubleClicked(QTreeWidgetItem *item, int column) {
     bool ok;
     varmap[kParamPath] = item->data(column,Qt::UserRole);
     duree = (item->text(1)).toInt(&ok,10);
+    varmap[kParamLength] = duree;
     int s=0, m=0; //pour le temps restant
     m = duree/60;
     s = duree%60;
@@ -261,6 +277,9 @@ void MainWindow::processMessages(){
 
 void MainWindow::timer2timeout() {
     qDebug() << "timer 2";
+    duree=0;
+    timer->stop();
+    timer2->stop();
 }
 
 void MainWindow::on_actionAnglais_triggered()

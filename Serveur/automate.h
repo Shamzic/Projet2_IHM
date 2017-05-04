@@ -37,6 +37,7 @@ private:
     QSignalTransition * transUnmute;
     QSignalTransition * transTime;
     QString path;
+    int state;
     int length = 0;
     int temps;
     int volume = 100;

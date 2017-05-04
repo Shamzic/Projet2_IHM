@@ -21,7 +21,7 @@
  */
 Playbutton::Playbutton(QWidget *parent) :
     QWidget(parent),
-    isPlaying(false),
+    isPlaying(true),
     picturePlayButton(":/images/playButton.png"),
     picturePauseButton(":/images/pauseButton.png")
 {
