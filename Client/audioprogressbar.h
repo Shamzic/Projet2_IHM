@@ -26,6 +26,7 @@ signals:
 
 public slots:
     void changeAudio(int length);
+    void changeMax(int timemax);
 
 protected:
     int timePassed; // in ms ?

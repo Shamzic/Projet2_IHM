@@ -21,6 +21,7 @@
  */
 AudioProgressBar::AudioProgressBar(QWidget *parent) :
     QWidget(parent),
+
     timePassed(0),
     audioLength(2000), //pour tester
     pictureFilledProgressBar(":/images/bar_meter.png"),
@@ -105,4 +106,10 @@ void AudioProgressBar::mousePressEvent(QMouseEvent *event) {
     else if (timePassed > audioLength)
         timePassed = audioLength;
     update();
+}
+
+
+void AudioProgressBar::changeMax(int timemax){
+    this->audioLength=timemax;
+    qDebug()<<"change max time :"<<audioLength;
 }
