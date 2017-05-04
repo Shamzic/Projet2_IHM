@@ -114,3 +114,8 @@ void AudioProgressBar::changeMax(int timemax){
     this->audioLength=timemax;
     qDebug()<<"change max time :"<<audioLength;
 }
+
+void AudioProgressBar::addOneSecond() {
+    changeAudio(timePassed+1);
+    /** pas d'émit ici ! */
+}

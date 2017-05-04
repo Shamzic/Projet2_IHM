@@ -73,9 +73,10 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->audioProgress,SIGNAL(timeChanged(int)),this,SLOT(audioProgressClicked(int)));
     connect(this,SIGNAL(changeTimeBar(int)),ui->audioProgress,SLOT(changeAudio(int)));
     connect(this,SIGNAL(changeMaxTimeBar(int)),ui->audioProgress,SLOT(changeMax(int)));
+    connect(this,SIGNAL(addSecond()),ui->audioProgress,SLOT(addOneSecond()));
 
     connect(timer, SIGNAL(timeout()), this, SLOT(processMessages()));
-
+    connect(timer2, SIGNAL(timeout()), this, SLOT(timer2timeout()));
 }
 
 MainWindow::~MainWindow() {
@@ -149,9 +150,7 @@ void MainWindow::audioProgressClicked(int t) {
     QVariantMap varmap;
     varmap[kParamTime] = t;
 
-qDebug() << "progress bar cliqued";
     // todo : signal mise à jour timer
-
 
     emit signalUI(kSignalTime,varmap);
 }
@@ -189,15 +188,25 @@ void MainWindow::message(signalType sig, QVariantMap params) {
 
 void MainWindow::audioDoubleClicked(QTreeWidgetItem *item, int column) {
     QVariantMap varmap;
+    QString dureeString;
     bool ok;
     varmap[kParamPath] = item->data(column,Qt::UserRole);
-    qDebug() << "column"<<column;
     int duree = (item->text(1)).toInt(&ok,10);
-    QString dureeString = item->text(1);
-    qDebug()<<" durée : "<<dureeString;
+    int s=0, m=0;
+    m = duree/60;
+    s = duree%60;
+    if (s<10)
+        dureeString = QString::number(m)+":0"+QString::number(s);
+    else
+        dureeString = QString::number(m)+":"+QString::number(s);
+    minutes = 0;
+    secondes = 0;
+    ui->tempsPasse->setText("0:00");
+    ui->tempsRestant->setText(dureeString);
     evolutionTimer(0,duree);
     emit changeMaxTimeBar(duree);
     emit changeButtonState(true);
+    emit changeTimeBar(0);
     emit signalUI(kSignalChangeAudio,varmap);
 }
 
@@ -218,6 +227,10 @@ void MainWindow::on_muteButton_clicked() {
 }
 
 void MainWindow::evolutionTimer(int start,int end){
+    timer->stop();
+    timer2->stop();
+    timer->setInterval(1000);
+    timer2->setInterval(end*1000);
     timer->start(1000);
     timer2->start(end*1000);
     qDebug()<<"Timer go ! ";
@@ -237,4 +250,9 @@ void MainWindow::processMessages(){
         temps_passe =""+QString::number(minutes)+":0"+QString::number(secondes);
     ui->tempsRestant->setText(temps_restant);
     ui->tempsPasse->setText(temps_passe);
+    emit addSecond();
+}
+
+void MainWindow::timer2timeout() {
+    qDebug() << "timer 2";
 }

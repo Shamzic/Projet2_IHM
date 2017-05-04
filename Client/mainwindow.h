@@ -47,6 +47,7 @@ signals:
     void changeVolumeBar(int);
     void changeTimeBar(int);
     void changeMaxTimeBar(int);
+    void addSecond();
 
 public slots:
     // Messages reçus du client
@@ -56,6 +57,7 @@ public slots:
     void audioProgressClicked(int t);
     void closeEvent(QCloseEvent *event);
     void evolutionTimer(int start,int end);
+    void timer2timeout();
 
 private slots:
     void audioDoubleClicked(QTreeWidgetItem *item, int column);
