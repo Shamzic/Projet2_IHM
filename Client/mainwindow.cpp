@@ -209,7 +209,9 @@ void MainWindow::message(signalType sig, QVariantMap params) {
         case kSignalTime:
             qDebug() << "got time signal, time: " << params[kParamTime].toInt() ;
             emit changeTimeBar(params[kParamTime].toInt());
+            break;
         case kSignalEnd:
+            qDebug() << "ici?";
             on_action_triggered();
             break;
         default:
