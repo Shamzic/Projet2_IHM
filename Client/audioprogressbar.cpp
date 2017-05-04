@@ -45,8 +45,6 @@ void AudioProgressBar::changeAudio(int length) {
         timePassed=audioLength;
     timePassed=length;
     update();
-
-    qDebug() << "timepassed: " << timePassed;
 }
 
 /**
