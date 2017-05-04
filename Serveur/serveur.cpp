@@ -53,6 +53,9 @@ Serveur::~Serveur() {
 
 /** Terminer si mpv n'est plus accessible */
 void Serveur::endServer() {
+    QJsonObject jsonObjectClient ;
+    jsonObjectClient[kJsonSignal]=kSignalEnd;
+    sendMessageToClients(jsonObjectClient);
     emit terminateSig();
 }
 

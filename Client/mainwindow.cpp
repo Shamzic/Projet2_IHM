@@ -109,8 +109,9 @@ void MainWindow::playbuttonClicked(bool isPlaying) {
      //   emit signalUI(kSignalChangeAudio,varmap);
     //} else {
         varmap[kParamPath] = ui->AudioTree->currentItem()->data(0,Qt::UserRole);
-        varmap[kParamLength] = duree;
+        varmap[kParamLength] = ui->AudioTree->currentItem()->text(1).toInt();
         if (isPlaying) {
+            timer2->setInterval(varmap[kParamLength].toInt());
             emit signalUI(kSignalPlay,varmap);
             //if(ui->AudioTree->currentItem()->text(0)!=nom_morceau)
                audioDoubleClicked(ui->AudioTree->currentItem(),0);
@@ -215,6 +216,11 @@ void MainWindow::message(signalType sig, QVariantMap params) {
         case kSignalTime:
             qDebug() << "got time signal, time: " << params[kParamTime].toInt() ;
             emit changeTimeBar(params[kParamTime].toInt());
+            break;
+        case kSignalEnd:
+            qDebug() << "ici?";
+            on_action_triggered();
+            break;
         default:
             break;
     }
@@ -352,7 +358,6 @@ void MainWindow::on_fastForwButton_clicked()
     qDebug()<<"hop suivant : "<<ui->AudioTree->topLevelItem(i)->text(0);
     ui->AudioTree->topLevelItem(i)->setSelected(true);
     ui->AudioTree->setCurrentItem(ui->AudioTree->topLevelItem(i));
-    //playbuttonClicked(true);
     audioDoubleClicked(ui->AudioTree->topLevelItem(i),0);
 }
 
@@ -376,6 +381,6 @@ void MainWindow::on_fastBackButton_clicked()
     qDebug()<<"hop suivant : "<<ui->AudioTree->topLevelItem(i)->text(0);
     ui->AudioTree->topLevelItem(i)->setSelected(true);
     ui->AudioTree->setCurrentItem(ui->AudioTree->topLevelItem(i));
-    //playbuttonClicked(true);
+
     audioDoubleClicked(ui->AudioTree->topLevelItem(i),0);
 }
