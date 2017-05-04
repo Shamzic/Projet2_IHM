@@ -58,6 +58,7 @@ MainWindow::MainWindow(QWidget *parent) :
             audio->setText(1,QString::number(f.audioProperties()->lengthInSeconds()));
             audio->setData(0,Qt::UserRole,QVariant(audio_files[i]));
             ui->AudioTree->setCurrentItem(audio->treeWidget()->topLevelItem(0));
+            ui->AudioTree->currentItem()->setSelected(true);
         }
     }
 
@@ -80,6 +81,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(timer, SIGNAL(timeout()), this, SLOT(processMessages()));
     connect(timer2, SIGNAL(timeout()), this, SLOT(timer2timeout()));
     ui->AudioTree->setCurrentItem(ui->AudioTree->currentItem());
+    ui->AudioTree->setCurrentItem(ui->AudioTree->topLevelItem(0));
 }
 
 MainWindow::~MainWindow() {
@@ -347,7 +349,6 @@ void MainWindow::on_fastForwButton_clicked()
     qDebug()<<"hop suivant : "<<ui->AudioTree->topLevelItem(i)->text(0);
     ui->AudioTree->topLevelItem(i)->setSelected(true);
     ui->AudioTree->setCurrentItem(ui->AudioTree->topLevelItem(i));
-
     audioDoubleClicked(ui->AudioTree->topLevelItem(i),0);
 }
 
@@ -359,7 +360,6 @@ void MainWindow::on_fastBackButton_clicked()
     {
         i--;
         qDebug()<<"i : "<<i;
-       // Do something with item ...
     }
 
     ui->AudioTree->topLevelItem(i)->setSelected(false);
