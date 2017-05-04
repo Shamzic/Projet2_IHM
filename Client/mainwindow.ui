@@ -287,11 +287,19 @@
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionFran_ais">
+   <property name="icon">
+    <iconset resource="images.qrc">
+     <normaloff>:/images/drapeau_france.png</normaloff>:/images/drapeau_france.png</iconset>
+   </property>
    <property name="text">
     <string>Français</string>
    </property>
   </action>
   <action name="actionAnglais">
+   <property name="icon">
+    <iconset resource="images.qrc">
+     <normaloff>:/images/drapeau_english.png</normaloff>:/images/drapeau_english.png</iconset>
+   </property>
    <property name="text">
     <string>Anglais</string>
    </property>

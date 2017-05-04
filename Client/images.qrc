@@ -12,5 +12,7 @@
         <file>images/volumecontrol.png</file>
         <file>images/volumeslider.png</file>
         <file>images/quit.png</file>
+        <file>images/drapeau_france.png</file>
+        <file>images/drapeau_english.png</file>
     </qresource>
 </RCC>
