@@ -113,7 +113,7 @@ void MainWindow::playbuttonClicked(bool isPlaying) {
         varmap[kParamPath] = ui->AudioTree->currentItem()->data(0,Qt::UserRole);
         varmap[kParamLength] = ui->AudioTree->currentItem()->text(1).toInt();
         if (isPlaying) {
-            timer2->setInterval(varmap[kParamLength].toInt());
+            timer2->setInterval(varmap[kParamLength].toInt()*1000);
             emit signalUI(kSignalPlay,varmap);
             qDebug()<<"current song selected : "<<ui->AudioTree->currentItem()->text(0);
             qDebug()<<"current nom morceau : "<<nom_morceau;
@@ -200,6 +200,7 @@ void MainWindow::message(signalType sig, QVariantMap params) {
             timer2->stop();
             break;
         case kSignalEndPause:
+        qDebug() << "end pause";
             timer->start();
             timer2->start();
             break;
@@ -209,25 +210,13 @@ void MainWindow::message(signalType sig, QVariantMap params) {
             emit changeVolumeBar(params[kParamVolume].toInt());
             break;
         case kSignalGetProperties:
-            /*
-            path= params[kParamPath].toString();
-            duree = params[kParamLength].toInt();
-            if (params[kParamEtat].toInt() == kStatePlay) {
-                emit changeButtonState(true);
-                audioProgressClicked(params[kParamTime].toInt());
-                timer->start();
-            }
-            emit changeVolumeBar(params[kParamVolume].toInt());
-            emit changeMaxTimeBar(duree);
-            emit changeTimeBar(params[kParamTime].toInt());
-            */
+            startSynchronize(params);
             break;
         case kSignalTime:
             qDebug() << "got time signal, time: " << params[kParamTime].toInt() ;
             emit changeTimeBar(params[kParamTime].toInt());
             break;
         case kSignalEnd:
-            qDebug() << "ici?";
             on_action_triggered();
             break;
         default:
@@ -394,4 +383,34 @@ void MainWindow::on_fastBackButton_clicked()
     ui->AudioTree->setCurrentItem(ui->AudioTree->topLevelItem(i));
 
     audioDoubleClicked(ui->AudioTree->topLevelItem(i),0);
+}
+
+void MainWindow::startSynchronize(QVariantMap params) {
+    QString path = params[kParamPath].toString();
+    emit changeVolumeBar(params[kParamVolume].toInt());
+
+    qDebug()  << params[kParamTime].toInt() ;
+    switch (params[kParamEtat].toInt()) {
+        case kStateAttente:
+        qDebug() << "ici1";
+            minutes=0; secondes=0;
+            break;
+        case kStatePlay:
+        case kStateReprendre:
+        qDebug() << "ici2";
+            duree = params[kParamLength].toInt();
+            emit changeMaxTimeBar(duree);
+            emit changeButtonState(true);
+            //evolutionTimer(duree);
+            //emit changeTimeBar(params[kParamTime].toInt());
+            break;
+        case kStatePause:
+        qDebug() << "ici3";
+            emit changeMaxTimeBar(duree);
+            //emit changeTimeBar(params[kParamTime].toInt());
+            //timer2->setInterval(duree-params[kParamTime].toInt()*1000);
+            break;
+        default:
+            break;
+    }
 }

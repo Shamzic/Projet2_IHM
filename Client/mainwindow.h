@@ -40,6 +40,7 @@ private:
     float secondes;
     float minutes;
     int duree;
+    void startSynchronize(QVariantMap);
     QString nom_morceau;
     bool ouverture;
 

@@ -9,14 +9,11 @@
 #include <QDebug>
 
 Automate::Automate(QObject *parent) :
-    QObject(parent),
-    temps(0),
-    volume(100)
+    QObject(parent)
 {
     // Timer durée des
-    TpsLecture = new QTimer(this);
+    TpsLecture = new QTimer();
     TpsLecture->setSingleShot(true);
-    TpsLecture->stop();
     TpsLecture->setTimerType(Qt::PreciseTimer);
 
     // Machine à états
@@ -51,7 +48,7 @@ Automate::Automate(QObject *parent) :
     stateAttenteAudio->addTransition(this,SIGNAL(signalFin()),stateFin);
 
     // play vers attenteAudio, si fin du morceau
-    //statePlay->addTransition(TpsLecture,SIGNAL(timeout()),stateAttenteAudio);
+    statePlay->addTransition(TpsLecture,SIGNAL(timeout()),stateAttenteAudio);
     // play vers pause, si signal pause
     statePlay->addTransition(this,SIGNAL(signalPause()),statePause);
     statePlay->addTransition(this,SIGNAL(signalNewAudio()),statePlay);
@@ -63,7 +60,7 @@ Automate::Automate(QObject *parent) :
     // reprendre vers pause, si signal pause
     stateReprendre->addTransition(this,SIGNAL(signalPause()),statePause);
     // reprendre vers attenteAudio, si timeout
-    //stateReprendre->addTransition(TpsLecture,SIGNAL(timeout()),stateAttenteAudio);
+    stateReprendre->addTransition(TpsLecture,SIGNAL(timeout()),stateAttenteAudio);
     stateReprendre->addTransition(this,SIGNAL(signalNewAudio()),statePlay);
 
     QObject::connect(stateReprendre, SIGNAL(entered()), TpsLecture, SLOT(start()));
@@ -80,11 +77,6 @@ Automate::Automate(QObject *parent) :
     Lecteur->start();
     setupMessages();
 
-    connect(TpsLecture,SIGNAL(timeout()),this,SLOT(putain()));
-}
-
-void Automate::putain() {
-    qDebug() << "timeout";
 }
 
 // messages reçu depuis le serveur
@@ -104,8 +96,7 @@ void Automate::message(signalType sig, QVariantMap params) {
         case kSignalChangeAudio:
             path = params[kParamPath].toString();
             length = params[kParamLength].toInt();
-            TpsLecture->setInterval(length);
-            qDebug() << "timer changé";
+            TpsLecture->setInterval(length*1000);
             emit signalNewAudio();
             break;
         case kSignalVolume:
@@ -126,8 +117,7 @@ void Automate::message(signalType sig, QVariantMap params) {
         case kSignalTime:
             temps = params[kParamTime].toInt();
             restant = length-temps;
-            TpsLecture->setInterval(restant);
-            qDebug() << "timer changé";
+            TpsLecture->setInterval(restant*1000);
             emit signalTime();
         case kSignalGetProperties:
             properties[kParamVolume] = QVariant(volume);
@@ -161,16 +151,14 @@ void Automate::setupMessages() {
     QObject::connect(stateAttenteAudio, &QState::entered, [this](){
         addVolumeTransitions(stateAttenteAudio);
         qDebug()<<"entree attente audio";
-        qDebug() << TpsLecture->remainingTime();
-        qDebug() << TpsLecture->isActive();
     });
 
     QObject::connect(stateAttenteAudio, &QState::exited, [this](){
         removeVolumeTransitions(stateAttenteAudio);
+        qDebug() << TpsLecture->interval();
     });
 
     QObject::connect(statePlay, &QState::entered, [this](){
-    qDebug() << "duree :" << TpsLecture->interval();
         addVolumeTransitions(statePlay);
         qDebug()<<"entree state play";
         QVariantMap params;
