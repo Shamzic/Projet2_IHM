@@ -44,6 +44,8 @@ RESOURCES += \
 
 CONFIG += c++11
 
+TRANSLATIONS = client_en.ts
+
 
 !macx:LIBS += -L$$PWD/../lib/ -ltag -ldrm
 macx:LIBS += -L$$PWD/../libMacOS/ -ltag -lz

@@ -259,6 +259,14 @@
     <property name="title">
      <string>Préférences</string>
     </property>
+    <widget class="QMenu" name="menuLangues">
+     <property name="title">
+      <string>Langues</string>
+     </property>
+     <addaction name="actionFran_ais"/>
+     <addaction name="actionAnglais"/>
+    </widget>
+    <addaction name="menuLangues"/>
    </widget>
    <widget class="QMenu" name="menuQuitter">
     <property name="title">
@@ -277,6 +285,16 @@
    </attribute>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
+  <action name="actionFran_ais">
+   <property name="text">
+    <string>Français</string>
+   </property>
+  </action>
+  <action name="actionAnglais">
+   <property name="text">
+    <string>Anglais</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>

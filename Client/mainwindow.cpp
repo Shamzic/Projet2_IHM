@@ -30,7 +30,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
 {
     ui->setupUi(this);
-    this->setWindowTitle("Audio Player");
+    ui->retranslateUi(this);
+    this->setWindowTitle(tr("Audio Player"));
 
     int i;
     for (i=0; audio_files[i] != nullptr; i++) {
@@ -76,6 +77,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(this,SIGNAL(changeMaxTimeBar(int)),ui->audioProgress,SLOT(changeMax(int)));
 
     connect(timer, SIGNAL(timeout()), this, SLOT(processMessages()));
+
 
 }
 
@@ -201,4 +203,23 @@ void MainWindow::processMessages(){
         temps_passe =""+QString::number(minutes)+":0"+QString::number(secondes);
     ui->tempsRestant->setText(temps_restant);
     ui->tempsPasse->setText(temps_passe);
+}
+
+void MainWindow::on_actionAnglais_triggered()
+{
+    QTranslator translator;
+    translator.load("../Client/client_en.qm"); // A voir  sur MAC
+    QApplication::installTranslator(&translator);
+    //QApplication::removeTranslator(&translator);
+    ui->retranslateUi(this);
+}
+
+void MainWindow::on_actionFran_ais_triggered()
+{
+    QTranslator translator;
+    translator.load("../Client/client_en.qm"); // A voir  sur MAC
+    //QApplication::installTranslator(&translator);
+    QApplication::removeTranslator(&translator);
+    ui->retranslateUi(this);
+    this->setWindowTitle(tr("Audio Player"));
 }
