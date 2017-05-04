@@ -56,6 +56,8 @@ const char * const audio_files[]= {
     "Audio/EDEN - rock and roll.mp3",
     "Audio/Ludovico Einaudi - Fly.mp3",
     "Audio/Sing - I'm Still Standing.mp3",
+    "Audio/10 Unknown Soldier.mp3",
+    "Audio/Never Give Up.mp3",
     nullptr
 };
 

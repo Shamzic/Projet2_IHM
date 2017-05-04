@@ -247,7 +247,7 @@ void MainWindow::on_muteButton_clicked() {
     } else {
         mute = true;
         ui->muteButton->setIcon(QIcon(muteSymbol));
-        emit changeVolumeBar(0);
+        //emit changeVolumeBar(0);
         emit signalUI(kSignalMute,varmap);
     }
 }
@@ -262,17 +262,27 @@ void MainWindow::evolutionTimer(int duration){
 }
 
 void MainWindow::processMessages(){
-
-    QString temps_restant = ""+QString::number((timer2->remainingTime()/1000)/60)+":"+QString::number((timer2->remainingTime()/1000)%60);
+    int m_restant, s_restant;
+    m_restant =((timer2->remainingTime()/1000)/60);
+    s_restant =((timer2->remainingTime()/1000)%60);
+    QString temps_restant;
+    if(s_restant<10) {
+        temps_restant =""+QString::number(m_restant)+":0"+QString::number(s_restant);
+    } else {
+        temps_restant =""+QString::number(m_restant)+":"+QString::number(s_restant);
+    }
     secondes++;
     if(secondes==60){
         minutes++;
         secondes=0;
     }
 
-    QString temps_passe =""+QString::number(minutes)+":"+QString::number(secondes);
-    if(secondes<10)
+    QString temps_passe;
+    if(secondes<10) {
         temps_passe =""+QString::number(minutes)+":0"+QString::number(secondes);
+    } else {
+        temps_passe =""+QString::number(minutes)+":"+QString::number(secondes);
+    }
     ui->tempsRestant->setText(temps_restant);
     ui->tempsPasse->setText(temps_passe);
     emit addSecond();
@@ -280,6 +290,7 @@ void MainWindow::processMessages(){
 
 void MainWindow::timer2timeout() {
     qDebug() << "timer 2";
+    ui->tempsRestant->setText("0:00");
     duree=0;
     timer->stop();
     timer2->stop();

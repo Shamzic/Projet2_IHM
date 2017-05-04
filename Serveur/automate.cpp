@@ -63,7 +63,7 @@ Automate::Automate(QObject *parent) :
     // reprendre vers pause, si signal pause
     stateReprendre->addTransition(this,SIGNAL(signalPause()),statePause);
     // reprendre vers attenteAudio, si timeout
-    stateReprendre->addTransition(TpsLecture,SIGNAL(timeout()),stateAttenteAudio);
+    //stateReprendre->addTransition(TpsLecture,SIGNAL(timeout()),stateAttenteAudio);
     stateReprendre->addTransition(this,SIGNAL(signalNewAudio()),statePlay);
 
     QObject::connect(stateReprendre, SIGNAL(entered()), TpsLecture, SLOT(start()));
@@ -173,8 +173,6 @@ void Automate::setupMessages() {
     qDebug() << "duree :" << TpsLecture->interval();
         addVolumeTransitions(statePlay);
         qDebug()<<"entree state play";
-        qDebug() << TpsLecture->remainingTime();
-        qDebug() << TpsLecture->isActive();
         QVariantMap params;
         params[kParamPath]=QVariant(path);
         emit signalLecteur(kSignalPlay, params);
