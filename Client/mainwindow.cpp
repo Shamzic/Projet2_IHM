@@ -149,7 +149,7 @@ void MainWindow::audioProgressClicked(int t) {
     QVariantMap varmap;
     varmap[kParamTime] = t;
 
-
+qDebug() << "progress bar cliqued";
     // todo : signal mise à jour timer
 
 
@@ -189,9 +189,9 @@ void MainWindow::message(signalType sig, QVariantMap params) {
 
 void MainWindow::audioDoubleClicked(QTreeWidgetItem *item, int column) {
     QVariantMap varmap;
+    bool ok;
     varmap[kParamPath] = item->data(column,Qt::UserRole);
     qDebug() << "column"<<column;
-    bool ok;
     int duree = (item->text(1)).toInt(&ok,10);
     QString dureeString = item->text(1);
     qDebug()<<" durée : "<<dureeString;
