@@ -38,7 +38,7 @@ void Client::terminate() {
 void Client::serverMessageLoop() {
     while (m_running){
         QDataStream in(m_socket);
-        if (m_running && !m_socket->waitForReadyRead(200)){ // Rien dans la file d'attente
+        if (m_running && !m_socket->waitForReadyRead(1000)){ // Rien dans la file d'attente
             QThread::msleep(100); // On attend 1/10s et on continue
             continue;
         } else if (m_running) {

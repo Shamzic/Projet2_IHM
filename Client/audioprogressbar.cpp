@@ -106,6 +106,7 @@ void AudioProgressBar::mousePressEvent(QMouseEvent *event) {
     else if (timePassed > audioLength)
         timePassed = audioLength;
     update();
+    emit timeChanged(timePassed);
 }
 
 

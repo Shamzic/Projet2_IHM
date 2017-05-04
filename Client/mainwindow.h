@@ -34,6 +34,7 @@ private:
     bool mute;
     QPixmap muteSymbol;
     QPixmap volumeOnSymbol;
+    void ajouterAHistorique(QString path);
     QTimer *timer;
     QTimer *timer2;
     float secondes;
