@@ -40,6 +40,7 @@ private:
     float secondes;
     float minutes;
     int duree;
+    QString nom_morceau;
 
 signals:
     // Le format de communication vers le client

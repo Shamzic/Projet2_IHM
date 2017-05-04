@@ -27,7 +27,8 @@ MainWindow::MainWindow(QWidget *parent) :
     timer2(new QTimer()),
     secondes(0),
     minutes(0),
-    duree(0)
+    duree(0),
+    nom_morceau("")
 
 {
     ui->setupUi(this);
@@ -59,6 +60,8 @@ MainWindow::MainWindow(QWidget *parent) :
             audio->setData(0,Qt::UserRole,QVariant(audio_files[i]));
             ui->AudioTree->setCurrentItem(audio->treeWidget()->topLevelItem(0));
             ui->AudioTree->currentItem()->setSelected(true);
+            //qDebug()<<"audio à l'ini : "<<ui->AudioTree->currentItem()->text(0);
+            nom_morceau=audio->treeWidget()->topLevelItem(0)->text(0);
         }
     }
 
@@ -82,6 +85,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(timer2, SIGNAL(timeout()), this, SLOT(timer2timeout()));
     ui->AudioTree->setCurrentItem(ui->AudioTree->currentItem());
     ui->AudioTree->setCurrentItem(ui->AudioTree->topLevelItem(0));
+    qDebug()<<"audio à l'ini : "<<ui->AudioTree->currentItem()->text(0);
 }
 
 MainWindow::~MainWindow() {
@@ -108,7 +112,10 @@ void MainWindow::playbuttonClicked(bool isPlaying) {
         varmap[kParamLength] = duree;
         if (isPlaying) {
             emit signalUI(kSignalPlay,varmap);
+            //if(ui->AudioTree->currentItem()->text(0)!=nom_morceau)
+               audioDoubleClicked(ui->AudioTree->currentItem(),0);
         } else {
+            qDebug()<<"yo";
             timer->stop();
             timer2->stop();
             emit signalUI(kSignalPause,varmap);
