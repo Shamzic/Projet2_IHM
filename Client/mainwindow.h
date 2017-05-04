@@ -68,6 +68,8 @@ private slots:
     void on_actionAnglais_triggered();
     void on_actionFran_ais_triggered();
     void on_action_triggered();
+    void on_fastForwButton_clicked();
+    void on_fastBackButton_clicked();
 };
 
 #endif // MAINWINDOW_H

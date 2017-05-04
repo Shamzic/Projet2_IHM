@@ -303,3 +303,51 @@ void MainWindow::on_action_triggered()
 {
     QApplication::quit();
 }
+
+void MainWindow::on_fastForwButton_clicked()
+{
+    int i=0;
+    //ui->AudioTree->setCurrentItem(audio->treeWidget()->topLevelItem(0));
+    while(ui->AudioTree->topLevelItem(i)->text(0) != ui->AudioTree->currentItem()->text(0))
+    {
+        i++;
+        qDebug()<<"i : "<<i;
+       // Do something with item ...
+    }
+
+    ui->AudioTree->topLevelItem(i)->setSelected(false);
+    i++; // on prends le suivant
+    if(i==ui->AudioTree->topLevelItemCount())
+    {
+        qDebug()<<"topLevelItemCount() : "<<ui->AudioTree->topLevelItemCount();
+        i=0; // On revient au début
+    }
+    qDebug()<<"hop suivant : "<<ui->AudioTree->topLevelItem(i)->text(0);
+    ui->AudioTree->topLevelItem(i)->setSelected(true);
+    ui->AudioTree->setCurrentItem(ui->AudioTree->topLevelItem(i));
+    playbuttonClicked(true);
+}
+
+void MainWindow::on_fastBackButton_clicked()
+{
+    int i=ui->AudioTree->topLevelItemCount()-1;
+    //ui->AudioTree->setCurrentItem(audio->treeWidget()->topLevelItem(0));
+    while(ui->AudioTree->topLevelItem(i)->text(0) != ui->AudioTree->currentItem()->text(0))
+    {
+        i--;
+        qDebug()<<"i : "<<i;
+       // Do something with item ...
+    }
+
+    ui->AudioTree->topLevelItem(i)->setSelected(false);
+    i--; // on prends le suivant
+    if(i<0)
+    {
+        qDebug()<<"arrive au début : ";
+        i=ui->AudioTree->topLevelItemCount()-1; // On revient au début
+    }
+    qDebug()<<"hop suivant : "<<ui->AudioTree->topLevelItem(i)->text(0);
+    ui->AudioTree->topLevelItem(i)->setSelected(true);
+    ui->AudioTree->setCurrentItem(ui->AudioTree->topLevelItem(i));
+    playbuttonClicked(true);
+}
